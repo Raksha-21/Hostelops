@@ -2239,6 +2239,7 @@
     const API = window._API || '/api';
     let MOCK = false;
     let SESSION = { user: null, token: null };
+    try { const s = localStorage.getItem('hostelops_session'); if (s) SESSION = JSON.parse(s); } catch (e) { }
     let mineFilter = 'All';
 
     // ============================================================
@@ -2520,6 +2521,7 @@
       try {
         const data = await api('POST', '/auth/login', { email: e, password: p });
         SESSION = { user: { id: data.user._id || data.user.id, ...data.user }, token: data.token };
+        localStorage.setItem('hostelops_session', JSON.stringify(SESSION));
         err.textContent = '';
         toast(`Welcome, ${data.user.name}! 👋`, 'ok');
         goApp();
@@ -2539,6 +2541,7 @@
       try {
         const data = await api('POST', '/auth/register', { name: n, email: e, password: pw, roomNumber: r, hostelBlock: b, phone: ph });
         SESSION = { user: { id: data.user._id || data.user.id, ...data.user }, token: data.token };
+        localStorage.setItem('hostelops_session', JSON.stringify(SESSION));
         err.textContent = '';
         toast('Account created! Welcome to HostelOps 🎉', 'ok');
         goApp();
@@ -2546,12 +2549,14 @@
     }
     function doLogout() {
       SESSION = { user: null, token: null };
+      localStorage.removeItem('hostelops_session');
       toast('Signed out', 'info');
       goLanding();
     }
     function quickAdmin() {
       const u = DB.users.find(u => u.role === 'admin');
       SESSION = { user: { id: u._id, ...u, password: undefined }, token: 'demo' };
+      localStorage.setItem('hostelops_session', JSON.stringify(SESSION));
       toast('Admin demo active ⚙️', 'info');
       goApp();
     }
@@ -3050,6 +3055,7 @@
     // Landing counters
     function counter(id, to, suf = '') { let n = 0; const step = Math.ceil(to / 40); const t = setInterval(() => { n = Math.min(n + step, to); document.getElementById(id).textContent = n + suf; if (n >= to) clearInterval(t); }, 30); }
     window.addEventListener('load', () => {
+      if (SESSION.token) setTimeout(goApp, 50);
       counter('hs1', DB.complaints.length);
       counter('hs2', DB.complaints.filter(c => c.status === 'Resolved').length);
     });
