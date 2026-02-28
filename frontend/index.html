@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>HostelOps — Smart Complaint System</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ====== APPLE GLASSMORPHISM DESIGN SYSTEM ====== */
+    :root {
+      --g1: #07091a;
+      --g2: #0d1130;
+      --g3: #110a2e;
+      --glass: rgba(255, 255, 255, 0.07);
+      --glass2: rgba(255, 255, 255, 0.12);
+      --glass3: rgba(255, 255, 255, 0.17);
+      --gb: rgba(255, 255, 255, 0.16);
+      --gb2: rgba(255, 255, 255, 0.26);
+      --gshadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      --gshadow2: 0 24px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      --blur: blur(28px);
+      --blur2: blur(14px);
+      --p: #8b5cf6;
+      --p2: #a78bfa;
+      --p3: #c4b5fd;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --ora: #f97316;
+      --grn: #22c55e;
+      --red: #ef4444;
+      --yel: #eab308;
+      --t: rgba(255, 255, 255, 0.95);
+      --t2: rgba(255, 255, 255, 0.62);
+      --t3: rgba(255, 255, 255, 0.35);
+      --r: 18px;
+      --r2: 12px;
+      --r3: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--g1);
+      color: var(--t);
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gb);
+      border-radius: 3px
+    }
+
+    /* BG MESH */
+    #bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      animation: float 20s ease-in-out infinite
+    }
+
+    .o1 {
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(139, 92, 246, .35), transparent 70%);
+      top: -200px;
+      left: -200px;
+      animation-delay: 0s
+    }
+
+    .o2 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(236, 72, 153, .3), transparent 70%);
+      top: 35%;
+      right: -150px;
+      animation-delay: -7s
+    }
+
+    .o3 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(6, 182, 212, .25), transparent 70%);
+      bottom: -100px;
+      left: 25%;
+      animation-delay: -14s
+    }
+
+    .o4 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(249, 115, 22, .18), transparent 70%);
+      top: 15%;
+      left: 45%;
+      animation-delay: -3s
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1)
+      }
+
+      33% {
+        transform: translate(50px, -40px) scale(1.06)
+      }
+
+      66% {
+        transform: translate(-35px, 50px) scale(.94)
+      }
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: .35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E")
+    }
+
+    #root {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh
+    }
+
+    /* === GLASS PRIMITIVES === */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--gb);
+      border-radius: var(--r);
+      box-shadow: var(--gshadow)
+    }
+
+    .glass2 {
+      background: var(--glass2);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--gb2);
+      border-radius: var(--r);
+      box-shadow: var(--gshadow2)
+    }
+
+    .gcard {
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--gb);
+      border-radius: var(--r);
+      box-shadow: var(--gshadow);
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden
+    }
+
+    .gcard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(255, 255, 255, .07) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .gcard:hover {
+      background: var(--glass2);
+      border-color: rgba(255, 255, 255, .26);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .2)
+    }
+
+    /* === BUTTONS === */
+    .btn {
+      padding: .7rem 1.6rem;
+      border-radius: 999px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: .875rem;
+      cursor: pointer;
+      border: none;
+      transition: all .25s cubic-bezier(.4, 0, .2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      letter-spacing: .1px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .12);
+      opacity: 0;
+      transition: opacity .2s;
+      border-radius: inherit
+    }
+
+    .btn:hover::after {
+      opacity: 1
+    }
+
+    .btn-p {
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, .45)
+    }
+
+    .btn-p:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 35px rgba(139, 92, 246, .65)
+    }
+
+    .btn-g {
+      background: var(--glass2);
+      color: var(--t);
+      border: 1px solid var(--gb2);
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .btn-g:hover {
+      background: var(--glass3);
+      border-color: rgba(255, 255, 255, .35);
+      transform: translateY(-1px)
+    }
+
+    .btn-dan {
+      background: rgba(239, 68, 68, .18);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .btn-suc {
+      background: rgba(34, 197, 94, .15);
+      color: var(--grn);
+      border: 1px solid rgba(34, 197, 94, .3)
+    }
+
+    .btn-sm {
+      padding: .42rem .95rem;
+      font-size: .78rem
+    }
+
+    .btn-xs {
+      padding: .28rem .7rem;
+      font-size: .72rem
+    }
+
+    .btn-full {
+      width: 100%;
+      justify-content: center
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none !important
+    }
+
+    /* === FORMS === */
+    .fg {
+      margin-bottom: 1.15rem
+    }
+
+    .fg label {
+      display: block;
+      font-size: .73rem;
+      font-weight: 700;
+      color: var(--t2);
+      margin-bottom: .45rem;
+      letter-spacing: .6px;
+      text-transform: uppercase
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, .22);
+      border: 1px solid var(--gb);
+      border-radius: var(--r2);
+      padding: .75rem 1rem;
+      color: var(--t);
+      font-family: 'Outfit', sans-serif;
+      font-size: .875rem;
+      font-weight: 500;
+      outline: none;
+      transition: all .2s;
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: rgba(139, 92, 246, .6);
+      background: rgba(139, 92, 246, .09);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, .18)
+    }
+
+    .fg input::placeholder,
+    .fg textarea::placeholder {
+      color: var(--t3)
+    }
+
+    .fg select option {
+      background: #1a1035;
+      color: #fff
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 95px;
+      line-height: 1.6
+    }
+
+    .fg-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem
+    }
+
+    .fg-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem
+    }
+
+    .ferr {
+      color: var(--red);
+      font-size: .77rem;
+      margin-top: .35rem;
+      font-weight: 600
+    }
+
+    /* === BADGES === */
+    .badge {
+      padding: .22rem .75rem;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: inline-flex;
+      align-items: center;
+      gap: .28rem;
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .b-pending {
+      background: rgba(234, 179, 8, .15);
+      color: #fde68a;
+      border: 1px solid rgba(234, 179, 8, .32)
+    }
+
+    .b-inprog {
+      background: rgba(6, 182, 212, .15);
+      color: #67e8f9;
+      border: 1px solid rgba(6, 182, 212, .32)
+    }
+
+    .b-resolved {
+      background: rgba(34, 197, 94, .15);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, .32)
+    }
+
+    .b-rejected {
+      background: rgba(239, 68, 68, .18);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, .35)
+    }
+
+    .b-onhold {
+      background: rgba(249, 115, 22, .15);
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, .3)
+    }
+
+    .b-low {
+      background: rgba(148, 163, 184, .12);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, .22)
+    }
+
+    .b-medium {
+      background: rgba(234, 179, 8, .12);
+      color: #fde68a;
+      border: 1px solid rgba(234, 179, 8, .25)
+    }
+
+    .b-high {
+      background: rgba(249, 115, 22, .15);
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, .3)
+    }
+
+    .b-urgent {
+      background: rgba(239, 68, 68, .2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, .4)
+    }
+
+    .b-cat {
+      background: rgba(167, 139, 250, .15);
+      color: #c4b5fd;
+      border: 1px solid rgba(167, 139, 250, .3)
+    }
+
+    /* === LAYOUT === */
+    #landing,
+    .auth-page,
+    #app {
+      min-height: 100vh
+    }
+
+    /* LANDING NAV */
+    .lnav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      border-bottom: 1px solid var(--gb);
+      background: rgba(7, 9, 26, .4);
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2);
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 0%, var(--p3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .lnav-btns {
+      display: flex;
+      gap: .75rem
+    }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      min-height: 85vh
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(139, 92, 246, .18);
+      border: 1px solid rgba(139, 92, 246, .4);
+      color: var(--p3);
+      padding: .42rem 1.2rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2);
+      animation: fup .7s ease both
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5.8rem);
+      font-weight: 900;
+      line-height: 1.04;
+      letter-spacing: -3px;
+      margin-bottom: 1.5rem;
+      animation: fup .7s .1s ease both
+    }
+
+    .h1-grad {
+      background: linear-gradient(135deg, var(--p2) 0%, var(--pink) 45%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .hero-sub {
+      color: var(--t2);
+      font-size: 1.05rem;
+      max-width: 530px;
+      line-height: 1.75;
+      margin-bottom: 3rem;
+      font-weight: 400;
+      animation: fup .7s .2s ease both
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fup .7s .3s ease both
+    }
+
+    .hstats {
+      display: flex;
+      gap: 3.5rem;
+      margin-top: 4.5rem;
+      animation: fup .7s .5s ease both
+    }
+
+    .hstat {
+      text-align: center
+    }
+
+    .hstat-n {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .hstat-l {
+      font-size: .7rem;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: .15rem;
+      font-weight: 600
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 960px;
+      margin: 4rem auto 0;
+      padding: 0 2rem
+    }
+
+    .feat {
+      padding: 1.75rem;
+      text-align: center
+    }
+
+    .feat-ic {
+      font-size: 2.2rem;
+      margin-bottom: 1rem
+    }
+
+    .feat-t {
+      font-weight: 800;
+      font-size: .95rem;
+      margin-bottom: .5rem
+    }
+
+    .feat-d {
+      font-size: .82rem;
+      color: var(--t2);
+      line-height: 1.6
+    }
+
+    /* === AUTH PAGE === */
+    .auth-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem
+    }
+
+    .auth-wrap {
+      width: 100%;
+      max-width: 460px;
+      animation: fup .4s ease
+    }
+
+    .auth-back {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: var(--t2);
+      font-size: .83rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      background: none;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      transition: color .2s
+    }
+
+    .auth-back:hover {
+      color: var(--t)
+    }
+
+    .auth-box {
+      padding: 2.5rem
+    }
+
+    .auth-logo {
+      margin-bottom: 2rem
+    }
+
+    .auth-title {
+      font-size: 1.85rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: .4rem
+    }
+
+    .auth-sub {
+      color: var(--t2);
+      font-size: .875rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      font-weight: 400
+    }
+
+    .segs {
+      display: flex;
+      gap: 0;
+      background: rgba(0, 0, 0, .25);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 2rem
+    }
+
+    .seg {
+      flex: 1;
+      padding: .5rem;
+      text-align: center;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: .83rem;
+      font-weight: 700;
+      transition: all .2s;
+      color: var(--t3);
+      border: none;
+      background: transparent;
+      font-family: 'Outfit', sans-serif
+    }
+
+    .seg.on {
+      background: var(--glass2);
+      color: var(--t);
+      border: 1px solid var(--gb2);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, .35)
+    }
+
+    .demo-box {
+      margin-top: 1.5rem;
+      padding: 1rem 1.2rem;
+      background: rgba(139, 92, 246, .1);
+      border: 1px solid rgba(139, 92, 246, .22);
+      border-radius: var(--r2);
+      font-size: .78rem;
+      color: var(--t2);
+      line-height: 1.9
+    }
+
+    .demo-box strong {
+      color: var(--p3);
+      font-weight: 700
+    }
+
+    /* === APP SHELL === */
+    #app {
+      display: none
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 275px 1fr;
+      min-height: 100vh
+    }
+
+    /* SIDEBAR */
+    .sb {
+      background: rgba(7, 9, 26, .65);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-right: 1px solid var(--gb);
+      padding: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto
+    }
+
+    .sb-head {
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid var(--gb);
+      margin-bottom: 1rem
+    }
+
+    .sb-logo {
+      margin-bottom: 1.2rem
+    }
+
+    .sb-user {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      border-radius: var(--r2);
+      padding: .75rem
+    }
+
+    .sb-av {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      flex-shrink: 0
+    }
+
+    .sb-nm {
+      font-size: .86rem;
+      font-weight: 700;
+      line-height: 1.2
+    }
+
+    .sb-rl {
+      font-size: .67rem;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .sb-sec {
+      padding: .75rem 1rem
+    }
+
+    .sb-lbl {
+      font-size: .62rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--t3);
+      padding: 0 .5rem;
+      margin-bottom: .5rem;
+      font-weight: 700
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .6rem .8rem;
+      border-radius: var(--r2);
+      cursor: pointer;
+      transition: all .18s;
+      color: var(--t2);
+      font-size: .855rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: 'Outfit', sans-serif
+    }
+
+    .sb-item:hover {
+      background: var(--glass);
+      color: var(--t)
+    }
+
+    .sb-item.on {
+      background: linear-gradient(135deg, rgba(139, 92, 246, .28), rgba(236, 72, 153, .18));
+      color: #fff;
+      border: 1px solid rgba(139, 92, 246, .35);
+      box-shadow: 0 4px 18px rgba(139, 92, 246, .22)
+    }
+
+    .sb-ic {
+      font-size: 1rem;
+      width: 22px;
+      text-align: center
+    }
+
+    .sb-badge {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      color: #fff;
+      font-size: .62rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 800
+    }
+
+    .sb-foot {
+      margin-top: auto;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gb)
+    }
+
+    /* MAIN */
+    .main {
+      overflow-y: auto
+    }
+
+    .pghd {
+      padding: 1.75rem 2.5rem;
+      border-bottom: 1px solid var(--gb);
+      background: rgba(7, 9, 26, .35);
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem
+    }
+
+    .pgtitle {
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: -.5px
+    }
+
+    .pgsub {
+      font-size: .82rem;
+      color: var(--t2);
+      margin-top: .2rem
+    }
+
+    .pgcontent {
+      padding: 2rem 2.5rem
+    }
+
+    /* PAGE VISIBILITY */
+    .pg {
+      display: none;
+      animation: fup .3s ease
+    }
+
+    .pg.on {
+      display: block
+    }
+
+    /* STAT CARDS */
+    .sgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem
+    }
+
+    .scard {
+      padding: 1.3rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem
+    }
+
+    .sico {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0
+    }
+
+    .i-pu {
+      background: rgba(139, 92, 246, .2);
+      border: 1px solid rgba(139, 92, 246, .35)
+    }
+
+    .i-pi {
+      background: rgba(236, 72, 153, .2);
+      border: 1px solid rgba(236, 72, 153, .3)
+    }
+
+    .i-cy {
+      background: rgba(6, 182, 212, .2);
+      border: 1px solid rgba(6, 182, 212, .3)
+    }
+
+    .i-gr {
+      background: rgba(34, 197, 94, .2);
+      border: 1px solid rgba(34, 197, 94, .3)
+    }
+
+    .i-rd {
+      background: rgba(239, 68, 68, .2);
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .i-ye {
+      background: rgba(234, 179, 8, .2);
+      border: 1px solid rgba(234, 179, 8, .3)
+    }
+
+    .i-or {
+      background: rgba(249, 115, 22, .2);
+      border: 1px solid rgba(249, 115, 22, .3)
+    }
+
+    .sval {
+      font-size: 1.85rem;
+      font-weight: 900;
+      line-height: 1
+    }
+
+    .slbl {
+      font-size: .72rem;
+      color: var(--t2);
+      margin-top: .18rem;
+      font-weight: 600
+    }
+
+    /* COMPLAINT CARDS */
+    .clist {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem
+    }
+
+    .ccard {
+      padding: 1.35rem 1.6rem;
+      cursor: pointer
+    }
+
+    .chead {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: .8rem;
+      gap: 1rem
+    }
+
+    .ctitle {
+      font-weight: 800;
+      font-size: .93rem;
+      line-height: 1.3
+    }
+
+    .cbadges {
+      display: flex;
+      gap: .35rem;
+      flex-wrap: wrap;
+      margin-top: .4rem
+    }
+
+    .cbody {
+      font-size: .82rem;
+      color: var(--t2);
+      line-height: 1.6;
+      margin-bottom: .8rem
+    }
+
+    .cnote {
+      background: rgba(6, 182, 212, .08);
+      border: 1px solid rgba(6, 182, 212, .2);
+      border-radius: 10px;
+      padding: .55rem .85rem;
+      font-size: .78rem;
+      color: #7dd3fc;
+      margin-bottom: .7rem
+    }
+
+    .cfoot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: .7rem;
+      border-top: 1px solid var(--gb)
+    }
+
+    .cmeta {
+      font-size: .75rem;
+      color: var(--t3);
+      font-weight: 600
+    }
+
+    .cactions {
+      display: flex;
+      align-items: center;
+      gap: .7rem
+    }
+
+    .upbtn {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      color: var(--t2);
+      padding: .28rem .7rem;
+      border-radius: 999px;
+      font-size: .73rem;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700
+    }
+
+    .upbtn:hover,
+    .upbtn.voted {
+      background: rgba(139, 92, 246, .2);
+      border-color: rgba(139, 92, 246, .5);
+      color: var(--p3)
+    }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      align-items: center
+    }
+
+    .fpill {
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      color: var(--t2);
+      padding: .38rem 1rem;
+      border-radius: 999px;
+      font-size: .76rem;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .fpill.on {
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(139, 92, 246, .38)
+    }
+
+    .fpill:hover:not(.on) {
+      border-color: rgba(139, 92, 246, .5);
+      color: var(--p3)
+    }
+
+    .srch {
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      border-radius: var(--r2);
+      padding: .5rem 1rem;
+      color: var(--t);
+      font-family: 'Outfit', sans-serif;
+      font-size: .83rem;
+      font-weight: 500;
+      outline: none;
+      min-width: 200px;
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .srch:focus {
+      border-color: rgba(139, 92, 246, .5);
+      background: rgba(139, 92, 246, .09)
+    }
+
+    .srch::placeholder {
+      color: var(--t3)
+    }
+
+    .srch option {
+      background: #1a1035
+    }
+
+    /* MODAL */
+    .mover {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, .65);
+      backdrop-filter: var(--blur2);
+      -webkit-backdrop-filter: var(--blur2)
+    }
+
+    .mover.open {
+      display: flex
+    }
+
+    .mbox {
+      background: rgba(15, 10, 40, .88);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--gb2);
+      border-radius: 22px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: scalein .3s cubic-bezier(.34, 1.56, .64, 1);
+      box-shadow: 0 40px 120px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .13)
+    }
+
+    .mhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem
+    }
+
+    .mtitle {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: -.5px;
+      flex: 1;
+      padding-right: 1rem
+    }
+
+    .mclose {
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      color: var(--t2);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .18s;
+      flex-shrink: 0;
+      font-family: 'Outfit', sans-serif
+    }
+
+    .mclose:hover {
+      background: var(--glass2);
+      color: var(--t)
+    }
+
+    .dgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem
+    }
+
+    .df .dlbl {
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--t3);
+      margin-bottom: .25rem;
+      font-weight: 700
+    }
+
+    .df .dval {
+      font-size: .875rem;
+      font-weight: 600
+    }
+
+    .tl {
+      border-left: 2px solid var(--gb);
+      padding-left: 1.5rem;
+      margin-top: 1rem
+    }
+
+    .tli {
+      position: relative;
+      padding-bottom: 1rem
+    }
+
+    .tli::before {
+      content: '';
+      position: absolute;
+      left: -1.6rem;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      border: 2px solid var(--g1)
+    }
+
+    .tl-d {
+      font-size: .7rem;
+      color: var(--t3)
+    }
+
+    .tl-t {
+      font-size: .84rem;
+      margin-top: .12rem;
+      font-weight: 600
+    }
+
+    /* ADMIN UPDATE BOX */
+    .updbox {
+      background: rgba(139, 92, 246, .09);
+      border: 1px solid rgba(139, 92, 246, .22);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-top: 1.25rem
+    }
+
+    .updtitle {
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--p3);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    /* COMMENTS */
+    .cmts {
+      margin-top: 1.25rem
+    }
+
+    .cmts-title {
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--t2);
+      margin-bottom: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .cmt {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: .85rem
+    }
+
+    .cmt-av {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--p), var(--pink))
+    }
+
+    .cmt-av.admin {
+      background: linear-gradient(135deg, var(--cyan), var(--p))
+    }
+
+    .cmt-body {
+      flex: 1;
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      border-radius: 10px;
+      padding: .6rem .85rem
+    }
+
+    .cmt-meta {
+      font-size: .7rem;
+      color: var(--t3);
+      margin-bottom: .25rem;
+      font-weight: 700
+    }
+
+    .cmt-text {
+      font-size: .83rem;
+      line-height: 1.55;
+      font-weight: 400
+    }
+
+    /* STARS */
+    .stars {
+      display: flex;
+      gap: .3rem
+    }
+
+    .star {
+      font-size: 1.5rem;
+      cursor: pointer;
+      filter: grayscale(1) opacity(.35);
+      transition: all .15s
+    }
+
+    .star:hover,
+    .star.lit {
+      filter: none;
+      transform: scale(1.15)
+    }
+
+    /* PROGRESS BAR */
+    .pbar {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 999px;
+      height: 6px;
+      overflow: hidden;
+      margin-top: .35rem
+    }
+
+    .pfill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--p), var(--pink));
+      transition: width .65s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    /* TOAST */
+    .toasts {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      pointer-events: none
+    }
+
+    .toast {
+      background: rgba(15, 10, 40, .92);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--gb2);
+      border-radius: 14px;
+      padding: .95rem 1.25rem;
+      min-width: 270px;
+      max-width: 340px;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      animation: slidein .35s cubic-bezier(.34, 1.56, .64, 1);
+      box-shadow: 0 12px 45px rgba(0, 0, 0, .55);
+      pointer-events: all
+    }
+
+    .toast.ok {
+      border-left: 3px solid var(--grn)
+    }
+
+    .toast.err {
+      border-left: 3px solid var(--red)
+    }
+
+    .toast.info {
+      border-left: 3px solid var(--cyan)
+    }
+
+    .tmsg {
+      font-size: .84rem;
+      font-weight: 600
+    }
+
+    /* NOTIF DOT */
+    .notif-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      border: 2px solid var(--g1);
+      animation: pulse2 1.5s infinite
+    }
+
+    @keyframes pulse2 {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .6;
+        transform: scale(.8)
+      }
+    }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem
+    }
+
+    .empty-ic {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: .45
+    }
+
+    .empty-t {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--t2);
+      margin-bottom: .4rem
+    }
+
+    .empty-d {
+      font-size: .82rem;
+      color: var(--t3)
+    }
+
+    /* API STATUS BAR */
+    .apibar {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .55rem 1.5rem;
+      background: rgba(0, 0, 0, .35);
+      border-bottom: 1px solid var(--gb);
+      font-size: .73rem;
+      color: var(--t3);
+      font-weight: 600
+    }
+
+    .adot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%
+    }
+
+    .adot.live {
+      background: var(--grn);
+      animation: pulse2 2s infinite
+    }
+
+    .adot.mock {
+      background: var(--yel);
+      animation: pulse2 2s infinite
+    }
+
+    /* PROFILE */
+    .profile-box {
+      background: rgba(139, 92, 246, .08);
+      border: 1px solid rgba(139, 92, 246, .2);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem
+    }
+
+    .profile-av-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--p), var(--pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 900;
+      flex-shrink: 0
+    }
+
+    /* ANN = ANNOUNCEMENTS */
+    .ann {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin-bottom: 2rem
+    }
+
+    .ann-card {
+      padding: 1rem 1.25rem;
+      display: flex;
+      gap: .85rem;
+      align-items: flex-start
+    }
+
+    .ann-ic {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0
+    }
+
+    .ann-ic.info {
+      background: rgba(6, 182, 212, .2);
+      border: 1px solid rgba(6, 182, 212, .3)
+    }
+
+    .ann-ic.warning {
+      background: rgba(234, 179, 8, .2);
+      border: 1px solid rgba(234, 179, 8, .3)
+    }
+
+    .ann-ic.urgent {
+      background: rgba(239, 68, 68, .2);
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .ann-ic.maintenance {
+      background: rgba(139, 92, 246, .2);
+      border: 1px solid rgba(139, 92, 246, .3)
+    }
+
+    .ann-t {
+      font-weight: 800;
+      font-size: .875rem;
+      margin-bottom: .2rem
+    }
+
+    .ann-m {
+      font-size: .8rem;
+      color: var(--t2);
+      line-height: 1.55
+    }
+
+    .ann-d {
+      font-size: .7rem;
+      color: var(--t3);
+      margin-top: .3rem
+    }
+
+    /* ANALYTICS */
+    .angrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem
+    }
+
+    .ancard {
+      padding: 1.5rem
+    }
+
+    .antitle {
+      font-size: .7rem;
+      font-weight: 800;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1.2rem
+    }
+
+    .catico {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: .75rem
+    }
+
+    .catico-c {
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      border-radius: 13px;
+      padding: .9rem;
+      text-align: center
+    }
+
+    .catico-e {
+      font-size: 1.75rem;
+      margin-bottom: .35rem
+    }
+
+    .catico-n {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--p3)
+    }
+
+    .catico-l {
+      font-size: .7rem;
+      color: var(--t3);
+      font-weight: 600
+    }
+
+    /* DIVIDER */
+    .div {
+      height: 1px;
+      background: var(--gb);
+      margin: 1.25rem 0
+    }
+
+    .tag {
+      display: inline-flex;
+      background: rgba(139, 92, 246, .12);
+      border: 1px solid rgba(139, 92, 246, .25);
+      color: var(--p3);
+      padding: .15rem .6rem;
+      border-radius: 999px;
+      font-size: .7rem;
+      font-weight: 700;
+      margin: .2rem
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:768px) {
+      .shell {
+        grid-template-columns: 1fr
+      }
+
+      .sb {
+        display: none
+      }
+
+      .pgcontent {
+        padding: 1rem
+      }
+
+      .pghd {
+        padding: 1.25rem 1rem;
+        flex-direction: column;
+        gap: .75rem;
+        align-items: flex-start
+      }
+
+      .sgrid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .dgrid {
+        grid-template-columns: 1fr
+      }
+
+      .fg-row {
+        grid-template-columns: 1fr
+      }
+
+      .fg-3 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .angrid {
+        grid-template-columns: 1fr
+      }
+
+      .features {
+        grid-template-columns: 1fr
+      }
+
+      .hstats {
+        gap: 1.8rem
+      }
+
+      .lnav {
+        padding: 1rem 1.5rem
+      }
+    }
+
+    @keyframes fup {
+      from {
+        opacity: 0;
+        transform: translateY(18px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes slidein {
+      from {
+        opacity: 0;
+        transform: translateX(22px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    @keyframes scalein {
+      from {
+        opacity: 0;
+        transform: scale(.88)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="bg">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="orb o4"></div>
+  </div>
+  <div id="root">
+
+    <!-- ========== LANDING ========== -->
+    <div id="landing">
+      <nav class="lnav">
+        <div class="logo">HostelOps</div>
+        <div class="lnav-btns">
+          <button class="btn btn-g btn-sm" onclick="goAuth('login')">Sign In</button>
+          <button class="btn btn-p btn-sm" onclick="goAuth('register')">Get Started</button>
+        </div>
+      </nav>
+      <div class="hero">
+        <h1>Smart Hostel<br /><span class="h1-grad">Complaint System</span></h1>
+        <div class="hero-btns">
+          <button class="btn btn-p" onclick="goAuth('register')">🎓 Student Portal</button>
+          <button class="btn btn-g" onclick="quickAdmin()">⚙️ Admin Demo</button>
+        </div>
+        <div class="hstats">
+          <div class="hstat">
+            <div class="hstat-n" id="hs1">0</div>
+            <div class="hstat-l">Complaints Filed</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n" id="hs2">0</div>
+            <div class="hstat-l">Resolved</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n" id="hs3">18h</div>
+            <div class="hstat-l">Avg Resolution</div>
+          </div>
+        </div>
+      </div>
+      <div class="features">
+        <div class="gcard feat">
+          <div class="feat-ic">🐳</div>
+          <div class="feat-t">Docker Containerized</div>
+          <div class="feat-d">Every service isolated in containers with restart policies, health checks and persistent
+            volumes.</div>
+        </div>
+        <div class="gcard feat">
+          <div class="feat-ic">🔁</div>
+          <div class="feat-t">Nginx Reverse Proxy</div>
+          <div class="feat-d">All traffic through Port 80. API and frontend behind one secure endpoint with rate
+            limiting.</div>
+        </div>
+        <div class="gcard feat">
+          <div class="feat-ic">🔒</div>
+          <div class="feat-t">Secure by Design</div>
+          <div class="feat-d">Only Port 80 exposed. DB and backend stay on internal Docker network. JWT auth + Helmet.
+          </div>
+        </div>
+      </div>
+      <div style="height:3rem"></div>
+    </div>
+
+    <!-- ========== AUTH PAGE ========== -->
+    <div id="authp" style="display:none" class="auth-page">
+      <div class="auth-wrap">
+        <button class="auth-back" onclick="goLanding()">← Back to Home</button>
+        <div class="glass2 auth-box">
+          <div class="auth-logo">
+            <div class="logo">HostelOps</div>
+          </div>
+          <div class="segs">
+            <button class="seg on" id="seg-l" onclick="switchSeg('login')">Sign In</button>
+            <button class="seg" id="seg-r" onclick="switchSeg('register')">Register</button>
+          </div>
+          <!-- LOGIN -->
+          <div id="f-login">
+            <div class="auth-title">Welcome back</div>
+            <div class="auth-sub">Access your HostelOps account to track and manage complaints.</div>
+            <div class="fg"><label>Email Address</label><input type="email" id="le" placeholder="you@college.edu"
+                onkeydown="if(event.key==='Enter')doLogin()" /></div>
+            <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')doLogin()" />
+              <div class="ferr" id="le-err"></div>
+            </div>
+            <button class="btn btn-p btn-full" onclick="doLogin()" id="login-btn">Sign In →</button>
+            <div class="demo-box">
+              <div style="font-weight:800;color:var(--p3);margin-bottom:.35rem">Demo Credentials</div>
+              👨‍🎓 <strong>student@hostel.com</strong> / 123456<br />⚙️ <strong>admin@hostel.com</strong> / admin123
+            </div>
+          </div>
+          <!-- REGISTER -->
+          <div id="f-reg" style="display:none">
+            <div class="auth-title">Create account</div>
+            <div class="auth-sub">Join as a student to submit and track hostel maintenance complaints.</div>
+            <div class="fg-row">
+              <div class="fg"><label>Full Name</label><input type="text" id="rn" placeholder="Your name" /></div>
+              <div class="fg"><label>Email</label><input type="email" id="re" placeholder="you@college.edu" /></div>
+            </div>
+            <div class="fg-row">
+              <div class="fg"><label>Room Number</label><input type="text" id="rr" placeholder="A-101" /></div>
+              <div class="fg"><label>Hostel Block</label><select id="rb">
+                  <option value="">Select block</option>
+                  <option>Block A</option>
+                  <option>Block B</option>
+                  <option>Block C</option>
+                  <option>Block D</option>
+                  <option>Block E</option>
+                </select></div>
+            </div>
+            <div class="fg-row">
+              <div class="fg"><label>Phone</label><input type="text" id="rph" placeholder="9876543210" /></div>
+              <div class="fg"><label>Password</label><input type="password" id="rpw" placeholder="Min 6 chars" /></div>
+            </div>
+            <div class="ferr" id="re-err"></div>
+            <button class="btn btn-p btn-full" onclick="doRegister()">Create Account →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== APP ========== -->
+    <div id="app">
+      <div class="apibar">
+        <div class="adot" id="adot"></div><span id="astat">Connecting...</span><span
+          style="margin-left:auto;opacity:.5">API: <span id="aurl"></span></span>
+      </div>
+      <div class="shell">
+        <!-- SIDEBAR -->
+        <aside class="sb">
+          <div class="sb-head">
+            <div class="sb-logo">
+              <div class="logo">HostelOps</div>
+            </div>
+            <div class="sb-user">
+              <div class="sb-av" id="sbav">S</div>
+              <div>
+                <div class="sb-nm" id="sbnm">User</div>
+                <div class="sb-rl" id="sbrl">Student</div>
+              </div>
+            </div>
+          </div>
+          <div class="sb-sec" id="nav-s">
+            <div class="sb-lbl">Student Menu</div>
+            <button class="sb-item on" onclick="showPg('sdash')"><span class="sb-ic">📊</span>Dashboard</button>
+            <button class="sb-item" onclick="showPg('submit')"><span class="sb-ic">📝</span>Submit Complaint</button>
+            <button class="sb-item" onclick="showPg('mine')"><span class="sb-ic">📋</span>My Complaints<span
+                class="sb-badge" id="sbadge">0</span></button>
+            <button class="sb-item" onclick="showPg('sbulletin')"><span class="sb-ic">📢</span>Announcements</button>
+            <button class="sb-item" onclick="showPg('profile')"><span class="sb-ic">👤</span>My Profile</button>
+          </div>
+          <div class="sb-sec" id="nav-a" style="display:none">
+            <div class="sb-lbl">Admin Menu</div>
+            <button class="sb-item on" onclick="showPg('adash')"><span class="sb-ic">📊</span>Dashboard</button>
+            <button class="sb-item" onclick="showPg('allcomp')"><span class="sb-ic">📋</span>All Complaints<span
+                class="sb-badge" id="abadge">0</span></button>
+            <button class="sb-item" onclick="showPg('analytics')"><span class="sb-ic">📈</span>Analytics</button>
+            <button class="sb-item" onclick="showPg('announce')"><span class="sb-ic">📢</span>Announcements</button>
+            <button class="sb-item" onclick="showPg('students')"><span class="sb-ic">👥</span>Students</button>
+          </div>
+          <div class="sb-foot"><button class="btn btn-g btn-full btn-sm" onclick="doLogout()">🚪 Sign Out</button></div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+
+          <!-- ---- STUDENT DASHBOARD ---- -->
+          <div class="pg on" id="pg-sdash">
+            <div class="pghd">
+              <div>
+                <div class="pgtitle" id="sd-title">Dashboard</div>
+                <div class="pgsub" id="sd-sub">Welcome!</div>
+              </div><button class="btn btn-p btn-sm" onclick="showPg('submit')">+ New Complaint</button>
+            </div>
+            <div class="pgcontent">
+              <div id="ann-banner"></div>
+              <div class="sgrid" id="sd-stats"></div>
+              <div class="gcard" style="padding:1.5rem;margin-bottom:1.5rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+                  <div style="font-weight:800;font-size:.95rem">Recent Activity</div><button class="btn btn-g btn-xs"
+                    onclick="showPg('mine')">View All →</button>
+                </div>
+                <div id="sd-recent"></div>
+              </div>
+              <div class="gcard" style="padding:1.5rem">
+                <div style="font-weight:800;font-size:.95rem;margin-bottom:1.2rem">📊 My Complaint Summary</div>
+                <div id="sd-chart"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- SUBMIT ---- -->
+          <div class="pg" id="pg-submit">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('sdash')">← Back</button>
+                <div>
+                  <div class="pgtitle">Submit Complaint</div>
+                  <div class="pgsub">Report a hostel maintenance issue</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div class="gcard" style="padding:1.75rem;max-width:660px">
+                <div class="fg"><label>Complaint Title *</label><input type="text" id="c-t"
+                    placeholder="e.g. Ceiling fan not working since 2 days" /></div>
+                <div class="fg-row">
+                  <div class="fg"><label>Category *</label><select id="c-cat">
+                      <option value="">Select category</option>
+                      <option>Electrical</option>
+                      <option>Plumbing</option>
+                      <option>Furniture</option>
+                      <option>Cleaning</option>
+                      <option>Network</option>
+                      <option>Security</option>
+                      <option>Pest Control</option>
+                      <option>Water Supply</option>
+                      <option>Other</option>
+                    </select></div>
+                  <div class="fg"><label>Priority *</label><select id="c-pri">
+                      <option value="">Select priority</option>
+                      <option>Low</option>
+                      <option>Medium</option>
+                      <option>High</option>
+                      <option>Urgent</option>
+                    </select></div>
+                </div>
+                <div class="fg"><label>Description *</label><textarea id="c-desc"
+                    placeholder="Describe the issue in detail. When did it start? Exact location? Any previous attempts to fix?"></textarea>
+                </div>
+                <div class="fg-row">
+                  <div class="fg"><label>Room Number</label><input type="text" id="c-room"
+                      placeholder="Auto from profile" /></div>
+                  <div class="fg"><label>Specific Location</label><input type="text" id="c-loc"
+                      placeholder="Near window, bathroom floor…" /></div>
+                </div>
+                <div class="fg"><label>Tags (comma separated)</label><input type="text" id="c-tags"
+                    placeholder="e.g. urgent, fan, block-a" /></div>
+                <div class="fg" style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+                  <input type="checkbox" id="c-pub" checked style="width:auto;accent-color:var(--p)" />
+                  <label for="c-pub" style="text-transform:none;font-size:.875rem;color:var(--t2);letter-spacing:0">Make
+                    this complaint visible to other students (they can upvote it)</label>
+                </div>
+                <div class="ferr" id="c-err"></div>
+                <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                  <button class="btn btn-p" onclick="submitComplaint()">🚀 Submit Complaint</button>
+                  <button class="btn btn-g" onclick="clearCF()">Clear Form</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- MY COMPLAINTS ---- -->
+          <div class="pg" id="pg-mine">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('sdash')">← Back</button>
+                <div>
+                  <div class="pgtitle">My Complaints</div>
+                  <div class="pgsub" id="mine-sub">Your submitted issues</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div class="filters">
+                <button class="fpill on" onclick="fMine('All',this)">All</button>
+                <button class="fpill" onclick="fMine('Pending',this)">⏳ Pending</button>
+                <button class="fpill" onclick="fMine('In Progress',this)">🔧 In Progress</button>
+                <button class="fpill" onclick="fMine('Resolved',this)">✅ Resolved</button>
+                <button class="fpill" onclick="fMine('On Hold',this)">⏸ On Hold</button>
+              </div>
+              <div class="clist" id="mine-list"></div>
+            </div>
+          </div>
+
+          <!-- ---- STUDENT BULLETIN ---- -->
+          <div class="pg" id="pg-sbulletin">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('sdash')">← Back</button>
+                <div>
+                  <div class="pgtitle">Announcements</div>
+                  <div class="pgsub">Important notices from hostel admin</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div id="sann-list"></div>
+            </div>
+          </div>
+
+          <!-- ---- PROFILE ---- -->
+          <div class="pg" id="pg-profile">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('sdash')">← Back</button>
+                <div>
+                  <div class="pgtitle">My Profile</div>
+                  <div class="pgsub">Manage your account details</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent" style="max-width:580px">
+              <div class="gcard" style="padding:1.75rem">
+                <div class="profile-box" style="display:flex;align-items:center;gap:1.25rem">
+                  <div class="profile-av-lg" id="p-av">S</div>
+                  <div>
+                    <div style="font-size:1.25rem;font-weight:900" id="p-name">–</div>
+                    <div style="font-size:.8rem;color:var(--t2);margin-top:.2rem" id="p-email">–</div>
+                    <div style="margin-top:.5rem" id="p-role-b"></div>
+                  </div>
+                </div>
+                <div class="div"></div>
+                <div class="fg-row">
+                  <div class="fg"><label>Full Name</label><input type="text" id="pf-name" /></div>
+                  <div class="fg"><label>Phone</label><input type="text" id="pf-phone" /></div>
+                </div>
+                <div class="fg-row">
+                  <div class="fg"><label>Room Number</label><input type="text" id="pf-room" /></div>
+                  <div class="fg"><label>Hostel Block</label><select id="pf-block">
+                      <option value="">Select</option>
+                      <option>Block A</option>
+                      <option>Block B</option>
+                      <option>Block C</option>
+                      <option>Block D</option>
+                      <option>Block E</option>
+                    </select></div>
+                </div>
+                <div class="ferr" id="pf-err"></div>
+                <button class="btn btn-p btn-sm" onclick="saveProfile()">💾 Save Changes</button>
+              </div>
+              <div class="gcard" style="padding:1.5rem;margin-top:1rem">
+                <div style="font-weight:800;margin-bottom:1rem;font-size:.95rem">🔔 Notifications</div>
+                <div id="notif-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- ADMIN DASHBOARD ---- -->
+          <div class="pg" id="pg-adash">
+            <div class="pghd">
+              <div>
+                <div class="pgtitle">Admin Dashboard</div>
+                <div class="pgsub">Hostel maintenance overview</div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div class="sgrid" id="ad-stats"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:.5rem">
+                <div class="gcard" style="padding:1.5rem">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--red);margin-bottom:1rem">🚨 Urgent Open
+                    Issues</div>
+                  <div id="urg-list"></div>
+                </div>
+                <div class="gcard" style="padding:1.5rem">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--t2);margin-bottom:1rem">📊 By Category</div>
+                  <div id="cat-brk"></div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-top:1.25rem">
+                <div class="gcard" style="padding:1.5rem">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--t2);margin-bottom:1rem">📋 Recent Complaints
+                  </div>
+                  <div id="ad-recent"></div>
+                </div>
+                <div class="gcard" style="padding:1.5rem">
+                  <div style="font-weight:800;font-size:.88rem;color:var(--t2);margin-bottom:1rem">📈 Quick Stats</div>
+                  <div id="ad-qstats"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- ALL COMPLAINTS ADMIN ---- -->
+          <div class="pg" id="pg-allcomp">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('adash')">← Back</button>
+                <div>
+                  <div class="pgtitle">All Complaints</div>
+                  <div class="pgsub">Manage all hostel complaints</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div class="filters">
+                <input class="srch" type="text" placeholder="🔍 Search title, student…" id="ac-srch"
+                  oninput="fAdmin()" />
+                <select class="srch" style="min-width:120px" id="ac-st" onchange="fAdmin()">
+                  <option value="">All Status</option>
+                  <option>Pending</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option>
+                  <option>Rejected</option>
+                  <option>On Hold</option>
+                </select>
+                <select class="srch" style="min-width:130px" id="ac-cat" onchange="fAdmin()">
+                  <option value="">All Categories</option>
+                  <option>Electrical</option>
+                  <option>Plumbing</option>
+                  <option>Furniture</option>
+                  <option>Cleaning</option>
+                  <option>Network</option>
+                  <option>Security</option>
+                  <option>Pest Control</option>
+                  <option>Water Supply</option>
+                  <option>Other</option>
+                </select>
+                <select class="srch" style="min-width:115px" id="ac-pri" onchange="fAdmin()">
+                  <option value="">All Priority</option>
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                  <option>Urgent</option>
+                </select>
+              </div>
+              <div class="clist" id="all-list"></div>
+            </div>
+          </div>
+
+          <!-- ---- ANALYTICS ---- -->
+          <div class="pg" id="pg-analytics">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('adash')">← Back</button>
+                <div>
+                  <div class="pgtitle">Analytics</div>
+                  <div class="pgsub">Trends, insights and performance</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent" id="analytics-body"></div>
+          </div>
+
+          <!-- ---- ADMIN ANNOUNCEMENTS ---- -->
+          <div class="pg" id="pg-announce">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('adash')">← Back</button>
+                <div>
+                  <div class="pgtitle">Announcements</div>
+                  <div class="pgsub">Post notices to all students</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div class="gcard" style="padding:1.75rem;max-width:580px;margin-bottom:2rem">
+                <div style="font-weight:800;margin-bottom:1.25rem">Post New Announcement</div>
+                <div class="fg"><label>Title</label><input type="text" id="an-t" placeholder="Announcement title" />
+                </div>
+                <div class="fg"><label>Message</label><textarea id="an-m" placeholder="Write your announcement here…"
+                    style="min-height:80px"></textarea></div>
+                <div class="fg-row">
+                  <div class="fg"><label>Type</label><select id="an-ty">
+                      <option value="info">ℹ️ Info</option>
+                      <option value="warning">⚠️ Warning</option>
+                      <option value="maintenance">🔧 Maintenance</option>
+                      <option value="urgent">🚨 Urgent</option>
+                    </select></div>
+                </div>
+                <button class="btn btn-p btn-sm" onclick="postAnnouncement()">📢 Post Announcement</button>
+              </div>
+              <div style="font-weight:800;margin-bottom:1rem">Active Announcements</div>
+              <div id="ann-list-admin"></div>
+            </div>
+          </div>
+
+          <!-- ---- STUDENTS LIST ---- -->
+          <div class="pg" id="pg-students">
+            <div class="pghd">
+              <div style="display:flex;align-items:center;gap:1.5rem"><button class="btn btn-g btn-sm"
+                  onclick="showPg('adash')">← Back</button>
+                <div>
+                  <div class="pgtitle">Students</div>
+                  <div class="pgsub">Registered student accounts</div>
+                </div>
+              </div>
+            </div>
+            <div class="pgcontent">
+              <div id="students-list"></div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+  </div><!-- #root -->
+
+  <!-- DETAIL MODAL -->
+  <div class="mover" id="modal">
+    <div class="mbox">
+      <div class="mhead">
+        <div class="mtitle" id="m-title">Details</div><button class="btn btn-g btn-sm" onclick="closeModal()">←
+          Back</button>
+      </div>
+      <div id="m-body"></div>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script>
+    // ============================================================
+    //  CONFIG
+    // ============================================================
+    const API = window._API || 'http://localhost/api';
+    let MOCK = false;
+    let SESSION = { user: null, token: null };
+    let mineFilter = 'All';
+
+    // ============================================================
+    //  SEED DATA
+    // ============================================================
+    const DB = {
+      users: [
+        { _id: 'u1', name: 'Rahul Kumar', email: 'student@hostel.com', password: '123456', role: 'student', roomNumber: 'A-101', hostelBlock: 'Block A', phone: '9876543210', notifications: [{ message: 'Welcome to HostelOps!', type: 'info', read: false, createdAt: new Date().toISOString() }, { message: 'Your WiFi complaint has been resolved.', type: 'success', read: false, createdAt: new Date(Date.now() - 86400000).toISOString() }] },
+        { _id: 'u2', name: 'Priya Sharma', email: 'priya@hostel.com', password: '123456', role: 'student', roomNumber: 'B-204', hostelBlock: 'Block B', phone: '9876543211', notifications: [] },
+        { _id: 'u3', name: 'Admin Kumar', email: 'admin@hostel.com', password: 'admin123', role: 'admin', roomNumber: '', hostelBlock: '', phone: '', notifications: [] },
+        { _id: 'u4', name: 'Amit Singh', email: 'amit@hostel.com', password: '123456', role: 'student', roomNumber: 'C-301', hostelBlock: 'Block C', phone: '9876543212', notifications: [] },
+        { _id: 'u5', name: 'Sneha Patel', email: 'sneha@hostel.com', password: '123456', role: 'student', roomNumber: 'D-102', hostelBlock: 'Block D', phone: '9876543213', notifications: [] },
+      ],
+      complaints: [
+        { _id: 'c1', student: 'u1', studentName: 'Rahul Kumar', studentRoom: 'A-101', studentBlock: 'Block A', title: 'Ceiling fan not working in room', category: 'Electrical', description: 'The ceiling fan has completely stopped working since 2 days. Switch is on but the fan is not rotating at all. Room is extremely hot.', priority: 'High', status: 'In Progress', assignedTo: 'Electrician Team A', adminNote: 'Electrician will visit tomorrow 10 AM. Issue is likely a capacitor failure.', rejectionReason: '', upvotes: ['u2', 'u4'], rating: null, ratingNote: '', location: 'Room center', tags: ['fan', 'electrical', 'room-a'], isPublic: true, comments: [{ _id: 'co1', authorName: 'Admin Kumar', authorRole: 'admin', text: 'Thank you for reporting. We have assigned it to the electrician team.', createdAt: new Date(Date.now() - 3600000).toISOString() }], createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), resolvedAt: null },
+        { _id: 'c2', student: 'u2', studentName: 'Priya Sharma', studentRoom: 'B-204', studentBlock: 'Block B', title: 'Continuous water leakage from tap', category: 'Plumbing', description: 'The bathroom tap is continuously dripping water. The entire floor stays wet. This is wasting water and causing slip hazard.', priority: 'Medium', status: 'Pending', assignedTo: '', adminNote: '', rejectionReason: '', upvotes: ['u1', 'u4', 'u5'], rating: null, ratingNote: '', location: 'Bathroom', tags: ['water', 'plumbing'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 86400000).toISOString(), resolvedAt: null },
+        { _id: 'c3', student: 'u4', studentName: 'Amit Singh', studentRoom: 'C-301', studentBlock: 'Block C', title: 'Study chair completely broken', category: 'Furniture', description: 'The study chair leg has snapped off. It is dangerous to sit on. I am unable to study properly. Need replacement urgently.', priority: 'Urgent', status: 'Pending', assignedTo: '', adminNote: '', rejectionReason: '', upvotes: [], rating: null, ratingNote: '', location: 'Study area', tags: ['chair', 'furniture', 'urgent'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 3 * 3600000).toISOString(), resolvedAt: null },
+        { _id: 'c4', student: 'u1', studentName: 'Rahul Kumar', studentRoom: 'A-101', studentBlock: 'Block A', title: 'WiFi speed below 1 Mbps', category: 'Network', description: 'WiFi signal is extremely weak and unusable. I cannot attend online classes or submit assignments. Been like this for 3 days.', priority: 'High', status: 'Resolved', assignedTo: 'Network Team', adminNote: 'Router reset and signal booster installed near Block A. Issue resolved.', rejectionReason: '', upvotes: ['u2'], rating: 4, ratingNote: 'Good response time but took 2 days.', location: 'Room', tags: ['wifi', 'network'], isPublic: true, comments: [{ _id: 'co2', authorName: 'Admin Kumar', authorRole: 'admin', text: 'We have addressed the issue. Please check and let us know.', createdAt: new Date(Date.now() - 4 * 86400000).toISOString() }], createdAt: new Date(Date.now() - 5 * 86400000).toISOString(), resolvedAt: new Date(Date.now() - 4 * 86400000).toISOString() },
+        { _id: 'c5', student: 'u2', studentName: 'Priya Sharma', studentRoom: 'B-204', studentBlock: 'Block B', title: 'Flickering room light', category: 'Electrical', description: 'Main room light flickers every few minutes. Very disturbing during night study hours. Already complained verbally 3 times.', priority: 'Medium', status: 'Resolved', assignedTo: 'Electrician Team B', adminNote: 'Replaced faulty bulb holder and wiring connection. All working fine now.', rejectionReason: '', upvotes: [], rating: 5, ratingNote: 'Excellent service! Fixed same day.', location: 'Main ceiling light', tags: ['light', 'electrical'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 7 * 86400000).toISOString(), resolvedAt: new Date(Date.now() - 6 * 86400000).toISOString() },
+        { _id: 'c6', student: 'u4', studentName: 'Amit Singh', studentRoom: 'C-301', studentBlock: 'Block C', title: 'Blocked bathroom drainage', category: 'Plumbing', description: 'Bathroom floor drain is completely blocked. Water accumulates. Floor stays wet all day. Very unhygienic and slippery.', priority: 'Urgent', status: 'In Progress', assignedTo: 'Plumbing Team', adminNote: 'Team will fix by tomorrow end of day. Avoiding harsh chemicals.', rejectionReason: '', upvotes: ['u1', 'u2', 'u5'], rating: null, ratingNote: '', location: 'Bathroom floor drain', tags: ['drainage', 'plumbing', 'block-c'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 12 * 3600000).toISOString(), resolvedAt: null },
+        { _id: 'c7', student: 'u1', studentName: 'Rahul Kumar', studentRoom: 'A-101', studentBlock: 'Block A', title: 'Room door lock jammed', category: 'Security', description: 'Room door lock is jammed. Has to force open/close. Very risky for security. Lock might break completely anytime.', priority: 'High', status: 'Pending', assignedTo: '', adminNote: '', rejectionReason: '', upvotes: ['u2', 'u4'], rating: null, ratingNote: '', location: 'Main door', tags: ['lock', 'security', 'door'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 2 * 3600000).toISOString(), resolvedAt: null },
+        { _id: 'c8', student: 'u5', studentName: 'Sneha Patel', studentRoom: 'D-102', studentBlock: 'Block D', title: 'Cockroach infestation in room', category: 'Pest Control', description: 'Found multiple cockroaches in the room near the sink area and under the bed. Need pest control service urgently.', priority: 'Urgent', status: 'On Hold', assignedTo: 'Pest Control', adminNote: 'Scheduled for next week pest control drive. On Hold until then.', rejectionReason: '', upvotes: ['u1', 'u2', 'u4'], rating: null, ratingNote: '', location: 'Near sink and under bed', tags: ['pest', 'cockroach', 'block-d'], isPublic: true, comments: [], createdAt: new Date(Date.now() - 8 * 3600000).toISOString(), resolvedAt: null },
+      ],
+      announcements: [
+        { _id: 'a1', title: 'Water Supply Disruption', message: 'Water supply will be disrupted on Sunday 10 AM - 2 PM for maintenance of the main pipeline. Please store water in advance.', type: 'maintenance', authorName: 'Admin Kumar', isActive: true, createdAt: new Date(Date.now() - 2 * 3600000).toISOString() },
+        { _id: 'a2', title: 'Electricity Maintenance Schedule', message: 'Block B and C will face scheduled power outage on Saturday 6-8 AM for transformer maintenance. We apologize for inconvenience.', type: 'warning', authorName: 'Admin Kumar', isActive: true, createdAt: new Date(Date.now() - 86400000).toISOString() },
+        { _id: 'a3', title: 'New Complaint Portal Live', message: 'We have launched the new HostelOps digital complaint system. Please use this portal to submit all maintenance complaints going forward.', type: 'info', authorName: 'Admin Kumar', isActive: true, createdAt: new Date(Date.now() - 2 * 86400000).toISOString() },
+      ],
+      nid: 9
+    };
+
+    // ============================================================
+    //  API LAYER
+    // ============================================================
+    async function api(method, path, body = null) {
+      if (MOCK) return mockHandler(method, path, body);
+      try {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (SESSION.token) opts.headers['Authorization'] = `Bearer ${SESSION.token}`;
+        if (body) opts.body = JSON.stringify(body);
+        const res = await fetch(API + path, opts);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'API Error');
+        return data;
+      } catch (e) {
+        console.warn('API failed → mock mode:', e.message);
+        MOCK = true; setApiStatus(false);
+        return mockHandler(method, path, body);
+      }
+    }
+
+    async function pingApi() {
+      try {
+        const r = await fetch(API + '/health', { signal: AbortSignal.timeout(3000) });
+        if (r.ok) { MOCK = false; setApiStatus(true); return; }
+      } catch { }
+      MOCK = true; setApiStatus(false);
+    }
+
+    function setApiStatus(live) {
+      document.getElementById('adot').className = 'adot ' + (live ? 'live' : 'mock');
+      document.getElementById('astat').textContent = live ? '🟢 Live Backend Connected' : '🟡 Demo Mode — Connect Docker backend for production';
+      document.getElementById('aurl').textContent = API;
+    }
+
+    // ============================================================
+    //  MOCK HANDLER
+    // ============================================================
+    function mockHandler(method, path, body) {
+      // AUTH
+      if (method === 'POST' && path === '/auth/login') {
+        const u = DB.users.find(u => u.email === body.email && u.password === body.password);
+        if (!u) throw new Error('Invalid credentials');
+        u.lastLogin = new Date().toISOString();
+        return { token: 'mock_' + u._id, user: { id: u._id, ...u, password: undefined } };
+      }
+      if (method === 'POST' && path === '/auth/register') {
+        if (DB.users.find(u => u.email === body.email)) throw new Error('Email already registered');
+        const u = { _id: 'u' + (Date.now()), name: body.name, email: body.email, password: body.password, role: 'student', roomNumber: body.roomNumber || '', hostelBlock: body.hostelBlock || '', phone: body.phone || '', notifications: [{ message: 'Welcome to HostelOps!', type: 'info', read: false, createdAt: new Date().toISOString() }] };
+        DB.users.push(u);
+        return { token: 'mock_' + u._id, user: { id: u._id, ...u, password: undefined } };
+      }
+      if (method === 'GET' && path === '/auth/me') {
+        const u = DB.users.find(u => u._id === SESSION.user.id);
+        return { user: { id: u._id, ...u, password: undefined } };
+      }
+      if (method === 'PUT' && path === '/auth/profile') {
+        const u = DB.users.find(u => u._id === SESSION.user.id);
+        if (body.name) u.name = body.name;
+        if (body.phone) u.phone = body.phone;
+        if (body.roomNumber) u.roomNumber = body.roomNumber;
+        if (body.hostelBlock) u.hostelBlock = body.hostelBlock;
+        SESSION.user = { ...SESSION.user, ...body };
+        return { user: { id: u._id, ...u, password: undefined } };
+      }
+      if (method === 'GET' && path === '/auth/notifications') {
+        const u = DB.users.find(u => u._id === SESSION.user.id);
+        return { notifications: (u?.notifications || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) };
+      }
+      if (method === 'PUT' && path === '/auth/notifications/read') {
+        const u = DB.users.find(u => u._id === SESSION.user.id);
+        if (u) u.notifications.forEach(n => n.read = true);
+        return { message: 'ok' };
+      }
+      if (method === 'GET' && path === '/auth/users') {
+        return { users: DB.users.filter(u => u.role === 'student').map(u => ({ ...u, password: undefined })) };
+      }
+
+      // COMPLAINTS
+      if (method === 'POST' && path === '/complaints') {
+        const c = {
+          _id: 'c' + (DB.nid++), student: SESSION.user.id, studentName: SESSION.user.name,
+          studentRoom: body.room || SESSION.user.roomNumber || 'N/A', studentBlock: SESSION.user.hostelBlock || '',
+          title: body.title, category: body.category, description: body.description, priority: body.priority || 'Medium',
+          location: body.location || '', tags: body.tags || [], isPublic: body.isPublic !== false,
+          status: 'Pending', assignedTo: '', adminNote: '', rejectionReason: '',
+          upvotes: [], rating: null, ratingNote: '', comments: [],
+          createdAt: new Date().toISOString(), resolvedAt: null
+        };
+        DB.complaints.push(c);
+        return { complaint: c };
+      }
+      if (method === 'GET' && path.startsWith('/complaints/my')) {
+        const params = new URLSearchParams(path.split('?')[1] || '');
+        let list = [...DB.complaints].filter(c => c.student === SESSION.user.id);
+        if (params.get('status')) list = list.filter(c => c.status === params.get('status'));
+        if (params.get('category')) list = list.filter(c => c.category === params.get('category'));
+        return { complaints: list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) };
+      }
+      if (method === 'GET' && path === '/complaints/stats') {
+        const all = DB.complaints;
+        const byCategory = {}, byStatus = {}, byPriority = {};
+        all.forEach(c => {
+          byCategory[c.category] = (byCategory[c.category] || 0) + 1;
+          byStatus[c.status] = (byStatus[c.status] || 0) + 1;
+          byPriority[c.priority] = (byPriority[c.priority] || 0) + 1;
+        });
+        const rated = all.filter(c => c.rating);
+        const avgRating = rated.length ? (rated.reduce((s, c) => s + c.rating, 0) / rated.length).toFixed(1) : 0;
+        const resolved = all.filter(c => c.status === 'Resolved' && c.resolvedAt);
+        const avgResolutionHrs = resolved.length ? (resolved.reduce((s, c) => s + (new Date(c.resolvedAt) - new Date(c.createdAt)), 0) / resolved.length / 3600000).toFixed(1) : 0;
+        return {
+          total: all.length,
+          pending: all.filter(c => c.status === 'Pending').length,
+          inProgress: all.filter(c => c.status === 'In Progress').length,
+          resolved: all.filter(c => c.status === 'Resolved').length,
+          rejected: all.filter(c => c.status === 'Rejected').length,
+          onHold: all.filter(c => c.status === 'On Hold').length,
+          urgent: all.filter(c => c.priority === 'Urgent' && c.status !== 'Resolved').length,
+          avgRating, avgResolutionHrs,
+          byCategory: Object.entries(byCategory).map(([k, v]) => ({ _id: k, count: v })).sort((a, b) => b.count - a.count),
+          byStatus: Object.entries(byStatus).map(([k, v]) => ({ _id: k, count: v })),
+          byPriority: Object.entries(byPriority).map(([k, v]) => ({ _id: k, count: v })),
+        };
+      }
+      if (method === 'GET' && path.startsWith('/complaints')) {
+        const params = new URLSearchParams(path.split('?')[1] || '');
+        let list = [...DB.complaints];
+        if (params.get('status')) list = list.filter(c => c.status === params.get('status'));
+        if (params.get('category')) list = list.filter(c => c.category === params.get('category'));
+        if (params.get('priority')) list = list.filter(c => c.priority === params.get('priority'));
+        if (params.get('search')) {
+          const q = params.get('search').toLowerCase();
+          list = list.filter(c => c.title.toLowerCase().includes(q) || c.studentName.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
+        }
+        return { complaints: list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)), total: list.length };
+      }
+      if (method === 'PUT' && path.startsWith('/complaints/')) {
+        const id = path.split('/')[2];
+        const c = DB.complaints.find(x => x._id === id); if (!c) throw new Error('Not found');
+        const oldStatus = c.status;
+        Object.assign(c, body);
+        if (body.status === 'Resolved' && !c.resolvedAt) c.resolvedAt = new Date().toISOString();
+        if (oldStatus !== c.status) {
+          const u = DB.users.find(u => u._id === c.student);
+          if (u) u.notifications.unshift({ message: `Your complaint "${c.title}" is now ${c.status}`, type: c.status === 'Resolved' ? 'success' : 'info', read: false, createdAt: new Date().toISOString() });
+        }
+        return { complaint: c };
+      }
+      if (method === 'DELETE' && path.startsWith('/complaints/')) {
+        const id = path.split('/')[2];
+        const idx = DB.complaints.findIndex(x => x._id === id);
+        if (idx > -1) DB.complaints.splice(idx, 1);
+        return { message: 'Deleted' };
+      }
+      if (method === 'POST' && path.includes('/upvote')) {
+        const id = path.split('/')[2];
+        const c = DB.complaints.find(x => x._id === id); if (!c) throw new Error('Not found');
+        if (c.student === SESSION.user.id) throw new Error("Can't upvote your own complaint");
+        const idx = c.upvotes.indexOf(SESSION.user.id);
+        if (idx === -1) c.upvotes.push(SESSION.user.id); else c.upvotes.splice(idx, 1);
+        return { upvotes: c.upvotes.length, upvoted: idx === -1 };
+      }
+      if (method === 'POST' && path.includes('/rate')) {
+        const id = path.split('/')[2];
+        const c = DB.complaints.find(x => x._id === id && x.student === SESSION.user.id);
+        if (!c) throw new Error('Not found');
+        c.rating = body.rating; c.ratingNote = body.ratingNote || '';
+        return { complaint: c };
+      }
+      if (method === 'POST' && path.includes('/comment')) {
+        const id = path.split('/')[2];
+        const c = DB.complaints.find(x => x._id === id); if (!c) throw new Error('Not found');
+        const cmt = { _id: 'cm' + (Date.now()), author: SESSION.user.id, authorName: SESSION.user.name, authorRole: SESSION.user.role, text: body.text, createdAt: new Date().toISOString() };
+        c.comments.push(cmt);
+        return { comments: c.comments };
+      }
+
+      // ANNOUNCEMENTS
+      if (method === 'GET' && path === '/announcements') {
+        return { announcements: DB.announcements.filter(a => a.isActive).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) };
+      }
+      if (method === 'POST' && path === '/announcements') {
+        const a = { _id: 'a' + (Date.now()), title: body.title, message: body.message, type: body.type || 'info', authorName: SESSION.user.name, isActive: true, createdAt: new Date().toISOString() };
+        DB.announcements.unshift(a);
+        return { announcement: a };
+      }
+      if (method === 'DELETE' && path.startsWith('/announcements/')) {
+        const id = path.split('/')[2];
+        const a = DB.announcements.find(x => x._id === id); if (a) a.isActive = false;
+        return { message: 'Removed' };
+      }
+      return null;
+    }
+
+    // ============================================================
+    //  NAVIGATION
+    // ============================================================
+    function goLanding() {
+      document.getElementById('landing').style.display = 'block';
+      document.getElementById('authp').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
+    }
+    function goAuth(tab) {
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('authp').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+      switchSeg(tab);
+    }
+    async function goApp() {
+      document.getElementById('landing').style.display = 'none';
+      document.getElementById('authp').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      const u = SESSION.user;
+      document.getElementById('sbav').textContent = u.name[0];
+      document.getElementById('sbnm').textContent = u.name;
+      document.getElementById('sbrl').textContent = u.role === 'admin' ? 'Administrator' : `Student · ${u.roomNumber || ''}`;
+      const isAdmin = u.role === 'admin';
+      document.getElementById('nav-s').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('nav-a').style.display = isAdmin ? 'block' : 'none';
+      if (u.roomNumber) document.getElementById('c-room').value = u.roomNumber;
+      await pingApi();
+      showPg(isAdmin ? 'adash' : 'sdash');
+    }
+    function switchSeg(t) {
+      document.getElementById('f-login').style.display = t === 'login' ? 'block' : 'none';
+      document.getElementById('f-reg').style.display = t === 'register' ? 'block' : 'none';
+      document.getElementById('seg-l').className = 'seg' + (t === 'login' ? ' on' : '');
+      document.getElementById('seg-r').className = 'seg' + (t === 'register' ? ' on' : '');
+    }
+    function showPg(id) {
+      document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+      document.querySelectorAll('.sb-item').forEach(n => n.classList.remove('on'));
+      document.getElementById('pg-' + id)?.classList.add('on');
+      document.querySelectorAll('.sb-item').forEach(n => { if (n.getAttribute('onclick')?.includes("'" + id + "'")) n.classList.add('on'); });
+      const map = { sdash: renderSDash, submit: () => { }, mine: () => renderMine('All'), sbulletin: renderSBulletin, profile: renderProfile, adash: renderADash, allcomp: renderAllComp, analytics: renderAnalytics, announce: renderAnnounce, students: renderStudents };
+      map[id]?.();
+    }
+
+    // ============================================================
+    //  AUTH ACTIONS
+    // ============================================================
+    async function doLogin() {
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      const e = document.getElementById('le').value.trim();
+      const p = document.getElementById('lp').value;
+      const err = document.getElementById('le-err');
+      try {
+        const data = await api('POST', '/auth/login', { email: e, password: p });
+        SESSION = { user: { id: data.user._id || data.user.id, ...data.user }, token: data.token };
+        err.textContent = '';
+        toast(`Welcome, ${data.user.name}! 👋`, 'ok');
+        goApp();
+      } catch (ex) { err.textContent = ex.message; }
+      btn.disabled = false; btn.textContent = 'Sign In →';
+    }
+    async function doRegister() {
+      const n = document.getElementById('rn').value.trim();
+      const e = document.getElementById('re').value.trim();
+      const r = document.getElementById('rr').value.trim();
+      const b = document.getElementById('rb').value;
+      const ph = document.getElementById('rph').value.trim();
+      const pw = document.getElementById('rpw').value;
+      const err = document.getElementById('re-err');
+      if (!n || !e || !pw) { err.textContent = 'Name, email and password are required.'; return; }
+      if (pw.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+      try {
+        const data = await api('POST', '/auth/register', { name: n, email: e, password: pw, roomNumber: r, hostelBlock: b, phone: ph });
+        SESSION = { user: { id: data.user._id || data.user.id, ...data.user }, token: data.token };
+        err.textContent = '';
+        toast('Account created! Welcome to HostelOps 🎉', 'ok');
+        goApp();
+      } catch (ex) { err.textContent = ex.message; }
+    }
+    function doLogout() {
+      SESSION = { user: null, token: null };
+      toast('Signed out', 'info');
+      goLanding();
+    }
+    function quickAdmin() {
+      const u = DB.users.find(u => u.role === 'admin');
+      SESSION = { user: { id: u._id, ...u, password: undefined }, token: 'demo' };
+      toast('Admin demo active ⚙️', 'info');
+      goApp();
+    }
+
+    // ============================================================
+    //  STUDENT DASHBOARD
+    // ============================================================
+    async function renderSDash() {
+      const { complaints } = await api('GET', '/complaints/my');
+      const { announcements } = await api('GET', '/announcements');
+      const pending = complaints.filter(c => c.status === 'Pending').length;
+      const inProg = complaints.filter(c => c.status === 'In Progress').length;
+      const resolved = complaints.filter(c => c.status === 'Resolved').length;
+      const unrated = complaints.filter(c => c.status === 'Resolved' && !c.rating).length;
+      document.getElementById('sbadge').textContent = pending + inProg;
+      const h = new Date().getHours();
+      document.getElementById('sd-title').textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, ${SESSION.user.name.split(' ')[0]}`;
+      document.getElementById('sd-sub').textContent = `Room ${SESSION.user.roomNumber || 'N/A'} · ${SESSION.user.hostelBlock || ''}${unrated ? ` · ⭐ ${unrated} complaint(s) awaiting rating` : ''}`;
+
+      // Announcements banner
+      const urgentAnns = announcements.filter(a => a.type === 'urgent' || a.type === 'warning').slice(0, 2);
+      document.getElementById('ann-banner').innerHTML = urgentAnns.map(a => `
+    <div style="background:rgba(${a.type === 'urgent' ? '239,68,68' : '234,179,8'},.1);border:1px solid rgba(${a.type === 'urgent' ? '239,68,68' : '234,179,8'},.28);border-radius:12px;padding:.85rem 1.25rem;margin-bottom:.85rem;display:flex;gap:.75rem;align-items:center">
+      <span style="font-size:1.1rem">${a.type === 'urgent' ? '🚨' : '⚠️'}</span>
+      <div><div style="font-weight:800;font-size:.875rem;margin-bottom:.18rem">${a.title}</div><div style="font-size:.8rem;color:var(--t2)">${a.message}</div></div>
+    </div>`).join('');
+
+      document.getElementById('sd-stats').innerHTML = [
+        statC('📝', 'i-pu', 'Total Filed', complaints.length),
+        statC('⏳', 'i-ye', 'Pending', pending),
+        statC('🔧', 'i-cy', 'In Progress', inProg),
+        statC('✅', 'i-gr', 'Resolved', resolved),
+      ].join('');
+
+      const recent = complaints.slice(0, 3);
+      const rl = document.getElementById('sd-recent');
+      if (!recent.length) { rl.innerHTML = empty('📭', 'No complaints yet', 'Submit your first complaint'); return; }
+      rl.innerHTML = '<div class="clist">' + recent.map(c => cCard(c, false)).join('') + '</div>';
+
+      // My summary chart
+      const cats = {};
+      complaints.forEach(c => { cats[c.category] = (cats[c.category] || 0) + 1; });
+      document.getElementById('sd-chart').innerHTML = Object.entries(cats).map(([cat, n]) => `
+    <div style="margin-bottom:.75rem">
+      <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.25rem"><span style="font-weight:600">${catIco(cat)} ${cat}</span><span style="color:var(--p3);font-weight:700">${n}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${((n / complaints.length) * 100).toFixed(0)}%"></div></div>
+    </div>`).join('') || '<div style="color:var(--t3);font-size:.83rem">No data yet</div>';
+    }
+
+    // ============================================================
+    //  MY COMPLAINTS
+    // ============================================================
+    async function renderMine(filter = 'All') {
+      mineFilter = filter;
+      const params = filter !== 'All' ? `?status=${encodeURIComponent(filter)}` : '';
+      const { complaints } = await api('GET', '/complaints/my' + params);
+      const el = document.getElementById('mine-list');
+      document.getElementById('mine-sub').textContent = `${complaints.length} complaint(s) found`;
+      if (!complaints.length) { el.innerHTML = empty('📭', 'No complaints here', 'Nothing in this category'); return; }
+      el.innerHTML = complaints.map(c => cCard(c, false)).join('');
+    }
+    function fMine(f, btn) {
+      document.querySelectorAll('#pg-mine .fpill').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      renderMine(f);
+    }
+
+    // ============================================================
+    //  STUDENT BULLETIN
+    // ============================================================
+    async function renderSBulletin() {
+      const { announcements } = await api('GET', '/announcements');
+      const el = document.getElementById('sann-list');
+      if (!announcements.length) { el.innerHTML = empty('📢', 'No announcements', 'Check back later'); return; }
+      el.innerHTML = '<div class="ann">' + announcements.map(a => annCard(a, false)).join('') + '</div>';
+    }
+
+    // ============================================================
+    //  PROFILE
+    // ============================================================
+    async function renderProfile() {
+      const u = SESSION.user;
+      document.getElementById('p-av').textContent = u.name[0];
+      document.getElementById('p-name').textContent = u.name;
+      document.getElementById('p-email').textContent = u.email;
+      document.getElementById('p-role-b').innerHTML = `<span class="badge ${u.role === 'admin' ? 'b-inprog' : 'b-cat'}">${u.role === 'admin' ? '⚙️ Admin' : '🎓 Student'}</span>`;
+      document.getElementById('pf-name').value = u.name || '';
+      document.getElementById('pf-phone').value = u.phone || '';
+      document.getElementById('pf-room').value = u.roomNumber || '';
+      document.getElementById('pf-block').value = u.hostelBlock || '';
+
+      const { notifications } = await api('GET', '/auth/notifications');
+      const nel = document.getElementById('notif-list');
+      if (!notifications.length) { nel.innerHTML = '<div style="color:var(--t3);font-size:.83rem">No notifications</div>'; return; }
+      nel.innerHTML = notifications.map(n => `
+    <div style="display:flex;gap:.75rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--gb);opacity:${n.read ? .8 : 1}">
+      <span style="font-size:1rem">${{ success: '✅', info: 'ℹ️', warning: '⚠️', error: '❌' }[n.type] || '🔔'}</span>
+      <div><div style="font-size:.83rem;font-weight:600">${n.message}</div><div style="font-size:.7rem;color:var(--t3);margin-top:.15rem">${ago(n.createdAt)}</div></div>
+      ${!n.read ? '<span style="width:7px;height:7px;background:var(--red);border-radius:50%;flex-shrink:0;margin-top:4px;margin-left:auto"></span>' : ''}
+    </div>`).join('');
+      await api('PUT', '/auth/notifications/read');
+    }
+    async function saveProfile() {
+      const name = document.getElementById('pf-name').value.trim();
+      const phone = document.getElementById('pf-phone').value.trim();
+      const roomNumber = document.getElementById('pf-room').value.trim();
+      const hostelBlock = document.getElementById('pf-block').value;
+      try {
+        const { user } = await api('PUT', '/auth/profile', { name, phone, roomNumber, hostelBlock });
+        SESSION.user = { ...SESSION.user, ...user };
+        document.getElementById('sbnm').textContent = user.name || SESSION.user.name;
+        document.getElementById('p-name').textContent = user.name || SESSION.user.name;
+        toast('Profile updated! ✅', 'ok');
+      } catch (e) { document.getElementById('pf-err').textContent = e.message; }
+    }
+
+    // ============================================================
+    //  ADMIN DASHBOARD
+    // ============================================================
+    async function renderADash() {
+      const stats = await api('GET', '/complaints/stats');
+      const { complaints: all } = await api('GET', '/complaints');
+      document.getElementById('abadge').textContent = stats.pending + stats.inProgress;
+
+      document.getElementById('ad-stats').innerHTML = [
+        statC('📋', 'i-pu', 'Total', stats.total),
+        statC('⏳', 'i-ye', 'Pending', stats.pending),
+        statC('🔧', 'i-cy', 'In Progress', stats.inProgress),
+        statC('✅', 'i-gr', 'Resolved', stats.resolved),
+        statC('🚨', 'i-rd', 'Urgent Open', stats.urgent),
+        statC('⏸', 'i-or', 'On Hold', stats.onHold),
+      ].join('');
+
+      // Urgent list
+      const urg = all.filter(c => c.priority === 'Urgent' && c.status !== 'Resolved').slice(0, 4);
+      const uel = document.getElementById('urg-list');
+      if (!urg.length) { uel.innerHTML = '<div style="color:var(--t3);font-size:.82rem">No urgent issues 🎉</div>'; }
+      else uel.innerHTML = urg.map(c => `
+    <div style="padding:.7rem 0;border-bottom:1px solid var(--gb);cursor:pointer" onclick="openModal('${c._id}')">
+      <div style="font-size:.855rem;font-weight:700;margin-bottom:.28rem">${c.title}</div>
+      <div style="display:flex;gap:.4rem;align-items:center">${statusB(c.status)}<span style="font-size:.7rem;color:var(--t3)">${c.studentName} · ${ago(c.createdAt)}</span></div>
+    </div>`).join('');
+
+      // Category breakdown
+      const cel = document.getElementById('cat-brk');
+      cel.innerHTML = (stats.byCategory || []).map(({ _id, count }) => `
+    <div style="margin-bottom:.7rem">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.22rem"><span style="font-weight:600">${catIco(_id)} ${_id}</span><span style="color:var(--p3);font-weight:700">${count}</span></div>
+      <div class="pbar"><div class="pfill" style="width:${((count / stats.total) * 100).toFixed(0)}%"></div></div>
+    </div>`).join('');
+
+      // Recent
+      document.getElementById('ad-recent').innerHTML = '<div class="clist">' + all.slice(0, 4).map(c => cCard(c, true)).join('') + '</div>';
+
+      // Quick stats
+      document.getElementById('ad-qstats').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:.75rem">
+      ${[['Resolution Rate', stats.total ? ((stats.resolved / stats.total) * 100).toFixed(0) + '%' : '0%'], ['Avg Rating', stats.avgRating + '⭐'], ['Avg Resolution', stats.avgResolutionHrs + 'h'], ['Total Urgent', stats.urgent + ' open']].map(([l, v]) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem .85rem;background:var(--glass);border:1px solid var(--gb);border-radius:10px">
+          <span style="font-size:.78rem;color:var(--t2);font-weight:600">${l}</span>
+          <span style="font-size:.9rem;font-weight:800;color:var(--p3)">${v}</span>
+        </div>`).join('')}
+    </div>`;
+    }
+
+    // ============================================================
+    //  ALL COMPLAINTS ADMIN
+    // ============================================================
+    async function renderAllComp() { fAdmin(); }
+    async function fAdmin() {
+      const srch = document.getElementById('ac-srch')?.value || '';
+      const st = document.getElementById('ac-st')?.value || '';
+      const cat = document.getElementById('ac-cat')?.value || '';
+      const pri = document.getElementById('ac-pri')?.value || '';
+      let q = [];
+      if (srch) q.push('search=' + encodeURIComponent(srch));
+      if (st) q.push('status=' + encodeURIComponent(st));
+      if (cat) q.push('category=' + encodeURIComponent(cat));
+      if (pri) q.push('priority=' + encodeURIComponent(pri));
+      const { complaints } = await api('GET', '/complaints' + (q.length ? '?' + q.join('&') : ''));
+      const el = document.getElementById('all-list');
+      if (!complaints.length) { el.innerHTML = empty('🔍', 'No complaints found', 'Try different filters'); return; }
+      el.innerHTML = complaints.map(c => cCard(c, true)).join('');
+    }
+
+    // ============================================================
+    //  ANALYTICS
+    // ============================================================
+    async function renderAnalytics() {
+      const stats = await api('GET', '/complaints/stats');
+      const { complaints: all } = await api('GET', '/complaints');
+      const resRate = stats.total ? ((stats.resolved / stats.total) * 100).toFixed(0) : 0;
+      const statusColors = { 'Pending': 'var(--yel)', 'In Progress': 'var(--cyan)', 'Resolved': 'var(--grn)', 'Rejected': 'var(--red)', 'On Hold': 'var(--ora)' };
+
+      document.getElementById('analytics-body').innerHTML = `
+    <div class="sgrid" style="margin-bottom:2rem">
+      ${statC('📊', 'i-pu', 'Total', stats.total)}${statC('⭐', 'i-ye', 'Avg Rating', stats.avgRating)}${statC('🏆', 'i-gr', 'Resolution %', resRate + '%')}${statC('⚡', 'i-cy', 'Avg Resolve', stats.avgResolutionHrs + 'h')}
+    </div>
+    <div class="angrid">
+      <div class="gcard ancard">
+        <div class="antitle">Status Distribution</div>
+        ${(stats.byStatus || []).map(({ _id, count }) => `
+          <div style="margin-bottom:.85rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.28rem">${statusB(_id)}<span style="color:var(--p3);font-weight:800;font-size:.85rem">${count}</span></div>
+            <div class="pbar"><div class="pfill" style="width:${stats.total ? ((count / stats.total) * 100).toFixed(0) : 0}%;background:${statusColors[_id] || 'var(--p)'}"></div></div>
+          </div>`).join('')}
+      </div>
+      <div class="gcard ancard">
+        <div class="antitle">Priority Breakdown</div>
+        ${(stats.byPriority || []).map(({ _id, count }) => `
+          <div style="margin-bottom:.85rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.28rem">${priorityB(_id)}<span style="color:var(--p3);font-weight:800;font-size:.85rem">${count}</span></div>
+            <div class="pbar"><div class="pfill" style="width:${stats.total ? ((count / stats.total) * 100).toFixed(0) : 0}%"></div></div>
+          </div>`).join('')}
+      </div>
+      <div class="gcard ancard" style="grid-column:1/-1">
+        <div class="antitle">Complaints by Category</div>
+        <div class="catico">
+          ${(stats.byCategory || []).map(({ _id, count }) => `
+            <div class="catico-c"><div class="catico-e">${catIco(_id)}</div><div class="catico-n">${count}</div><div class="catico-l">${_id}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+    }
+
+    // ============================================================
+    //  ANNOUNCEMENTS (ADMIN)
+    // ============================================================
+    async function renderAnnounce() {
+      const { announcements } = await api('GET', '/announcements');
+      const el = document.getElementById('ann-list-admin');
+      if (!announcements.length) { el.innerHTML = empty('📢', 'No announcements', 'Post one above'); return; }
+      el.innerHTML = '<div class="ann">' + announcements.map(a => annCard(a, true)).join('') + '</div>';
+    }
+    async function postAnnouncement() {
+      const title = document.getElementById('an-t').value.trim();
+      const message = document.getElementById('an-m').value.trim();
+      const type = document.getElementById('an-ty').value;
+      if (!title || !message) { toast('Title and message required', 'err'); return; }
+      try {
+        await api('POST', '/announcements', { title, message, type });
+        document.getElementById('an-t').value = '';
+        document.getElementById('an-m').value = '';
+        toast('Announcement posted! 📢', 'ok');
+        renderAnnounce();
+      } catch (e) { toast(e.message, 'err'); }
+    }
+    async function deleteAnn(id) {
+      await api('DELETE', `/announcements/${id}`);
+      toast('Announcement removed', 'info');
+      renderAnnounce();
+    }
+
+    // ============================================================
+    //  STUDENTS
+    // ============================================================
+    async function renderStudents() {
+      const { users } = await api('GET', '/auth/users');
+      const el = document.getElementById('students-list');
+      if (!users.length) { el.innerHTML = empty('👥', 'No students yet', ''); return; }
+      el.innerHTML = '<div class="sgrid">' + users.map(u => `
+    <div class="gcard scard">
+      <div class="sb-av" style="width:44px;height:44px;border-radius:12px;font-size:1.1rem">${u.name[0]}</div>
+      <div style="min-width:0">
+        <div style="font-weight:800;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.name}</div>
+        <div style="font-size:.73rem;color:var(--t2);margin-top:.15rem">${u.email}</div>
+        <div style="font-size:.7rem;color:var(--t3);margin-top:.15rem">Room ${u.roomNumber || 'N/A'} · ${u.hostelBlock || ''}</div>
+      </div>
+    </div>`).join('') + '</div>';
+    }
+
+    // ============================================================
+    //  SUBMIT COMPLAINT
+    // ============================================================
+    async function submitComplaint() {
+      const title = document.getElementById('c-t').value.trim();
+      const category = document.getElementById('c-cat').value;
+      const priority = document.getElementById('c-pri').value;
+      const description = document.getElementById('c-desc').value.trim();
+      const room = document.getElementById('c-room').value.trim() || SESSION.user.roomNumber;
+      const location = document.getElementById('c-loc').value.trim();
+      const tagsRaw = document.getElementById('c-tags').value;
+      const isPublic = document.getElementById('c-pub').checked;
+      const err = document.getElementById('c-err');
+      if (!title || !category || !priority || !description) { err.textContent = 'Please fill all required fields (*).'; return; }
+      err.textContent = '';
+      try {
+        await api('POST', '/complaints', { title, category, priority, description, room, location, tags: tagsRaw.split(',').map(t => t.trim()).filter(Boolean), isPublic });
+        clearCF();
+        toast('Complaint submitted! 🚀', 'ok');
+        showPg('mine');
+      } catch (e) { err.textContent = e.message; }
+    }
+    function clearCF() { ['c-t', 'c-desc', 'c-loc', 'c-tags'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; }); document.getElementById('c-cat').value = ''; document.getElementById('c-pri').value = ''; document.getElementById('c-err').textContent = ''; document.getElementById('c-pub').checked = true; }
+
+    // ============================================================
+    //  DETAIL MODAL
+    // ============================================================
+    async function openModal(id) {
+      const isAdmin = SESSION.user.role === 'admin';
+      const { complaints } = isAdmin ? await api('GET', '/complaints') : await api('GET', '/complaints/my');
+      const c = complaints.find(x => x._id === id) || DB.complaints.find(x => x._id === id);
+      if (!c) return;
+      const isOwner = c.student === SESSION.user.id;
+      const upvoted = c.upvotes.includes(SESSION.user.id);
+
+      document.getElementById('m-title').textContent = c.title;
+      let html = `
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.5rem">${catB(c.category)} ${priorityB(c.priority)} ${statusB(c.status)}</div>
+    <div class="dgrid">
+      <div class="df"><div class="dlbl">Student</div><div class="dval">${c.studentName}</div></div>
+      <div class="df"><div class="dlbl">Room</div><div class="dval">${c.studentRoom || 'N/A'}${c.studentBlock ? ' · ' + c.studentBlock : ''}</div></div>
+      <div class="df"><div class="dlbl">Filed</div><div class="dval">${fmtD(c.createdAt)}</div></div>
+      <div class="df"><div class="dlbl">Location</div><div class="dval">${c.location || 'Not specified'}</div></div>
+    </div>
+    <div class="df" style="margin-top:1rem"><div class="dlbl">Description</div><div class="dval" style="line-height:1.7;font-size:.875rem">${c.description}</div></div>
+  `;
+      if (c.tags?.length) html += `<div style="margin-top:.75rem">${c.tags.map(t => `<span class="tag">#${t}</span>`).join('')}</div>`;
+      if (c.assignedTo) html += `<div class="df" style="margin-top:1rem"><div class="dlbl">Assigned To</div><div class="dval">👷 ${c.assignedTo}</div></div>`;
+      if (c.adminNote) html += `<div style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:12px;padding:.85rem 1rem;margin-top:1rem"><div class="dlbl" style="margin-bottom:.28rem">Admin Note</div><div style="font-size:.875rem;color:#7dd3fc">${c.adminNote}</div></div>`;
+      if (c.rejectionReason) html += `<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:.85rem 1rem;margin-top:1rem"><div class="dlbl" style="margin-bottom:.28rem">Rejection Reason</div><div style="font-size:.875rem;color:#fca5a5">${c.rejectionReason}</div></div>`;
+      html += `<div style="margin-top:.85rem;font-size:.8rem;color:var(--t3);font-weight:600">👍 ${c.upvotes.length} student(s) support this complaint</div>`;
+
+      // Timeline
+      html += `<div style="margin-top:1.5rem"><div class="dlbl" style="margin-bottom:.75rem">Timeline</div><div class="tl">
+    <div class="tli"><div class="tl-d">${fmtD(c.createdAt)}</div><div class="tl-t">Complaint submitted by ${c.studentName}</div></div>
+    ${c.assignedTo ? `<div class="tli"><div class="tl-d">Assigned</div><div class="tl-t">Assigned to ${c.assignedTo}</div></div>` : ''}
+    ${c.status === 'In Progress' && !c.assignedTo ? `<div class="tli"><div class="tl-d">Status Update</div><div class="tl-t">Complaint is in progress</div></div>` : ''}
+    ${c.resolvedAt ? `<div class="tli"><div class="tl-d">${fmtD(c.resolvedAt)}</div><div class="tl-t">✅ Complaint resolved</div></div>` : ''}
+    ${c.status === 'Rejected' ? `<div class="tli"><div class="tl-d">Rejected</div><div class="tl-t">❌ Complaint rejected${c.rejectionReason ? ' — ' + c.rejectionReason : ''}</div></div>` : ''}
+  </div></div>`;
+
+      // Comments
+      if (c.comments?.length || true) {
+        html += `<div class="cmts"><div class="cmts-title">💬 Comments (${c.comments?.length || 0})</div>`;
+        html += (c.comments || []).map(cm => `
+      <div class="cmt"><div class="cmt-av ${cm.authorRole === 'admin' ? 'admin' : ''}">${cm.authorName[0]}</div>
+      <div class="cmt-body"><div class="cmt-meta">${cm.authorName} · ${cm.authorRole === 'admin' ? 'Admin' : 'Student'} · ${ago(cm.createdAt)}</div><div class="cmt-text">${cm.text}</div></div></div>`).join('');
+        html += `<div style="display:flex;gap:.65rem;margin-top:.75rem"><input type="text" id="cmt-input" class="srch" style="flex:1;min-width:0" placeholder="Add a comment…"/><button class="btn btn-g btn-sm" onclick="addComment('${c._id}')">Post</button></div>`;
+        html += `</div>`;
+      }
+
+      // Admin update
+      if (isAdmin) {
+        html += `<div class="updbox"><div class="updtitle">⚙️ Update Complaint</div>
+      <div class="fg-row">
+        <div class="fg"><label>Status</label><select id="u-st"><option ${c.status === 'Pending' ? 'selected' : ''}>Pending</option><option ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option><option ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option><option ${c.status === 'Rejected' ? 'selected' : ''}>Rejected</option><option ${c.status === 'On Hold' ? 'selected' : ''}>On Hold</option></select></div>
+        <div class="fg"><label>Assign To</label><input type="text" id="u-as" value="${c.assignedTo || ''}" placeholder="Team/Person name"/></div>
+      </div>
+      <div class="fg"><label>Admin Note</label><textarea id="u-no" style="min-height:65px">${c.adminNote || ''}</textarea></div>
+      <div class="fg"><label>Rejection Reason (if rejected)</label><input type="text" id="u-rr" value="${c.rejectionReason || ''}" placeholder="Reason for rejection"/></div>
+      <div style="display:flex;gap:.65rem;flex-wrap:wrap">
+        <button class="btn btn-p btn-sm" onclick="updateC('${c._id}')">💾 Save Update</button>
+        <button class="btn btn-dan btn-sm" onclick="deleteC('${c._id}')">🗑 Delete</button>
+      </div></div>`;
+      }
+
+      // Student rating
+      if (isOwner && c.status === 'Resolved' && !c.rating) {
+        html += `<div class="updbox" style="margin-top:1rem"><div class="updtitle">⭐ Rate This Resolution</div>
+      <div class="stars" id="mstars">${[1, 2, 3, 4, 5].map(i => `<span class="star" onclick="setRating('${c._id}',${i})" onmouseover="hstar(${i})" onmouseout="ustar()">★</span>`).join('')}</div>
+      <div class="fg" style="margin-top:.75rem"><label>Feedback Note (optional)</label><input type="text" id="rn-inp" placeholder="How was the service?"/></div>
+      <button class="btn btn-p btn-sm" onclick="doRate('${c._id}')">Submit Rating</button></div>`;
+      }
+      if (isOwner && c.rating) html += `<div style="margin-top:1rem;font-size:.85rem;color:var(--t2);font-weight:600">Your rating: ${'⭐'.repeat(c.rating)} (${c.rating}/5)${c.ratingNote ? ` — "${c.ratingNote}"` : ''}</div>`;
+
+      // Upvote button for others
+      if (!isOwner && !isAdmin) {
+        html += `<div style="margin-top:1.25rem"><button class="upbtn ${upvoted ? 'voted' : ''}" style="padding:.5rem 1.25rem;font-size:.83rem;border-radius:10px" onclick="doUpvote('${c._id}')">👍 ${upvoted ? 'Remove Upvote' : 'Upvote This Complaint'} (${c.upvotes.length})</button></div>`;
+      }
+
+      document.getElementById('m-body').innerHTML = html;
+      document.getElementById('modal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+    async function updateC(id) {
+      const status = document.getElementById('u-st').value;
+      const assignedTo = document.getElementById('u-as').value;
+      const adminNote = document.getElementById('u-no').value;
+      const rejectionReason = document.getElementById('u-rr').value;
+      try {
+        await api('PUT', `/complaints/${id}`, { status, assignedTo, adminNote, rejectionReason });
+        closeModal(); toast('Complaint updated! ✅', 'ok');
+        renderAllComp(); renderADash();
+      } catch (e) { toast(e.message, 'err'); }
+    }
+    async function deleteC(id) {
+      if (!confirm('Delete this complaint?')) return;
+      await api('DELETE', `/complaints/${id}`);
+      closeModal(); toast('Deleted', 'info');
+      renderAllComp(); renderADash();
+    }
+    async function doRate(id) {
+      const stars = [...document.querySelectorAll('#mstars .star')].filter(s => s.classList.contains('lit')).length;
+      const note = document.getElementById('rn-inp')?.value || '';
+      if (!stars) { toast('Please select a star rating', 'err'); return; }
+      try {
+        await api('POST', `/complaints/${id}/rate`, { rating: stars, ratingNote: note });
+        closeModal(); toast(`Rated ${stars}/5 ⭐ Thank you!`, 'ok');
+        renderMine(mineFilter);
+      } catch (e) { toast(e.message, 'err'); }
+    }
+    function setRating(id, n) { document.querySelectorAll('#mstars .star').forEach((s, i) => { s.classList.toggle('lit', i < n) }); }
+    function hstar(n) { document.querySelectorAll('#mstars .star').forEach((s, i) => { s.style.filter = i < n ? 'none' : 'grayscale(1) opacity(.35)'; }); }
+    function ustar() { const lit = document.querySelectorAll('#mstars .star.lit').length; document.querySelectorAll('#mstars .star').forEach((s, i) => { s.style.filter = i < lit ? 'none' : 'grayscale(1) opacity(.35)'; }); }
+
+    async function doUpvote(id) {
+      try {
+        const r = await api('POST', `/complaints/${id}/upvote`, {});
+        toast(r.upvoted ? 'Upvoted! 👍' : 'Upvote removed', 'info');
+        closeModal();
+        const active = document.querySelector('.pg.on')?.id;
+        if (active === 'pg-mine') renderMine(mineFilter);
+        else if (active === 'pg-allcomp') renderAllComp();
+        else if (active === 'pg-sdash') renderSDash();
+      } catch (e) { toast(e.message, 'err'); }
+    }
+    async function addComment(id) {
+      const text = document.getElementById('cmt-input')?.value?.trim();
+      if (!text) { toast('Enter a comment', 'err'); return; }
+      try {
+        await api('POST', `/complaints/${id}/comment`, { text });
+        toast('Comment posted', 'ok');
+        closeModal();
+        openModal(id);
+      } catch (e) { toast(e.message, 'err'); }
+    }
+
+    // ============================================================
+    //  COMPLAINT CARD
+    // ============================================================
+    function cCard(c, isAdmin) {
+      const upvoted = SESSION.user && c.upvotes.includes(SESSION.user.id);
+      return `<div class="gcard ccard" onclick="openModal('${c._id}')">
+    <div class="chead">
+      <div><div class="ctitle">${c.title}</div>
+      <div class="cbadges">${catB(c.category)} ${priorityB(c.priority)} ${statusB(c.status)}</div></div>
+    </div>
+    <div class="cbody">${c.description.substring(0, 115)}${c.description.length > 115 ? '…' : ''}</div>
+    ${c.adminNote ? `<div class="cnote">💬 <b>Admin:</b> ${c.adminNote.substring(0, 80)}${c.adminNote.length > 80 ? '…' : ''}</div>` : ''}
+    ${c.tags?.length ? `<div style="margin-bottom:.6rem">${c.tags.slice(0, 3).map(t => `<span class="tag">#${t}</span>`).join('')}</div>` : ''}
+    ${c.rating ? `<div style="font-size:.75rem;color:var(--t3);margin-bottom:.5rem;font-weight:600">${'⭐'.repeat(c.rating)} (${c.rating}/5)</div>` : ''}
+    <div class="cfoot">
+      <div class="cmeta">${isAdmin ? `<b>${c.studentName}</b> · Room ${c.studentRoom}` : `Room ${c.studentRoom || 'N/A'} · ${c.studentBlock || ''}`}</div>
+      <div class="cactions">
+        <button class="upbtn ${upvoted ? 'voted' : ''}" onclick="event.stopPropagation();doUpvoteCard('${c._id}',this)">👍 ${c.upvotes.length}</button>
+        ${c.comments?.length ? `<span class="cmeta">💬 ${c.comments.length}</span>` : ''}
+        <span class="cmeta">${ago(c.createdAt)}</span>
+      </div>
+    </div>
+  </div>`;
+    }
+    async function doUpvoteCard(id, btn) {
+      if (SESSION.user.role === 'admin') return;
+      try {
+        const r = await api('POST', `/complaints/${id}/upvote`, {});
+        toast(r.upvoted ? 'Upvoted! 👍' : 'Removed', 'info');
+        const active = document.querySelector('.pg.on')?.id?.replace('pg-', '');
+        if (active === 'sdash') renderSDash();
+        else if (active === 'mine') renderMine(mineFilter);
+        else if (active === 'allcomp') renderAllComp();
+        else if (active === 'adash') renderADash();
+      } catch (e) { toast(e.message, 'err'); }
+    }
+
+    function annCard(a, isAdmin) {
+      const icons = { info: 'ℹ️', warning: '⚠️', maintenance: '🔧', urgent: '🚨' };
+      return `<div class="gcard ann-card">
+    <div class="ann-ic ${a.type}">${icons[a.type] || '📢'}</div>
+    <div style="flex:1;min-width:0">
+      <div class="ann-t">${a.title}</div>
+      <div class="ann-m">${a.message}</div>
+      <div class="ann-d">Posted by ${a.authorName} · ${ago(a.createdAt)}</div>
+    </div>
+    ${isAdmin ? `<button class="btn btn-dan btn-xs" onclick="event.stopPropagation();deleteAnn('${a._id}')">Remove</button>` : ''}
+  </div>`;
+    }
+
+    // ============================================================
+    //  HELPERS
+    // ============================================================
+    function statC(ic, cls, lbl, val) { return `<div class="gcard scard"><div class="sico ${cls}">${ic}</div><div><div class="sval">${val}</div><div class="slbl">${lbl}</div></div></div>`; }
+    function empty(ic, t, d) { return `<div class="empty"><div class="empty-ic">${ic}</div><div class="empty-t">${t}</div><div class="empty-d">${d}</div></div>`; }
+    function statusB(s) { const m = { 'Pending': 'b-pending', 'In Progress': 'b-inprog', 'Resolved': 'b-resolved', 'Rejected': 'b-rejected', 'On Hold': 'b-onhold' }; const i = { 'Pending': '⏳', 'In Progress': '🔧', 'Resolved': '✅', 'Rejected': '❌', 'On Hold': '⏸' }; return `<span class="badge ${m[s] || ''}">${i[s] || ''} ${s}</span>`; }
+    function priorityB(p) { const m = { Low: 'b-low', Medium: 'b-medium', High: 'b-high', Urgent: 'b-urgent' }; return `<span class="badge ${m[p] || ''}">${p}</span>`; }
+    function catB(c) { return `<span class="badge b-cat">${catIco(c)} ${c}</span>`; }
+    function catIco(c) { return { 'Electrical': '⚡', 'Plumbing': '🚿', 'Furniture': '🪑', 'Cleaning': '🧹', 'Network': '📶', 'Security': '🔒', 'Pest Control': '🐛', 'Water Supply': '💧', 'Other': '📌' }[c] || '📌'; }
+    function ago(iso) { const d = Date.now() - new Date(iso), m = Math.floor(d / 60000); if (m < 1) return 'just now'; if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h / 24) + 'd ago'; }
+    function fmtD(iso) { return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function toast(msg, type = 'info') { const icons = { ok: '✅', err: '❌', info: 'ℹ️' }; const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<span>${icons[type]}</span><span class="tmsg">${msg}</span>`; document.getElementById('toasts').appendChild(t); setTimeout(() => t.remove(), 3800); }
+
+    // Close modal on overlay click
+    document.getElementById('modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+
+    // Landing counters
+    function counter(id, to, suf = '') { let n = 0; const step = Math.ceil(to / 40); const t = setInterval(() => { n = Math.min(n + step, to); document.getElementById(id).textContent = n + suf; if (n >= to) clearInterval(t); }, 30); }
+    window.addEventListener('load', () => {
+      counter('hs1', DB.complaints.length);
+      counter('hs2', DB.complaints.filter(c => c.status === 'Resolved').length);
+    });
+  </script>
+</body>
+
+</html>
